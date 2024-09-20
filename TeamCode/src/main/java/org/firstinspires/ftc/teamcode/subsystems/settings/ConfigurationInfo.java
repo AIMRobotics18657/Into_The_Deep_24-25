@@ -11,10 +11,10 @@ public class ConfigurationInfo {
     public static HardwareInterface leftHinge = new HardwareInterface("LH", false, 0);
     public static HardwareInterface rightHinge = new HardwareInterface("RH", false, 0);
 
-    // CLAW
-    public static HardwareInterface intake = new HardwareInterface("SS", true, 3);
-    public static HardwareInterface leftClamp = new HardwareInterface("LC", true, 1);
-    public static HardwareInterface rightClamp = new HardwareInterface("RC", false, 1);
+    // OUTAKE
+    public static HardwareInterface fingers = new HardwareInterface("FO", true, 0);
+    public static HardwareInterface wrist = new HardwareInterface("WO", true, 0);
+    public static HardwareInterface elbow = new HardwareInterface("EO", false, 0);
 
     // DRIVEBASE
     public static HardwareInterface leftFront = new HardwareInterface("FLD", true, 1);
