@@ -6,52 +6,77 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.subsystems.settings.ConfigurationInfo;
 
-public class outake extends Mechanism {
+public class Outake extends Mechanism {
 
-    Servo fingers;
-    Servo wrist;
-    Servo elbow ;
-    final double wristUp = 0.5;
-    final double elbowUp = 0.5;
-    final double wristDown = 0.1;
-    final double elbowDown = 0.1;
+    Servo leftArmHinge;
+    Servo rightArmHinge;
+    Servo leftBucketHinge;
+    Servo rightBucketHinge;
 
+    final double ARM_HINGE_IN_POSITION = 0; //arm hinges to intake position
+    final double ARM_HiNGE_OUT_POSITION = 0; //arm hinges to outake position
+    final double BUCKET_HINGE_IN_POSITION = 0; //bucket hinges to intake position
+    final double BUCKET_HINGE_OUT_POSITION = 0; //bucket hinges to outake position
 
 
 
     @Override
     public void init(HardwareMap hwMap) {
-        fingers = hwMap.get(Servo.class, ConfigurationInfo.fingers.getDeviceName());
-        wrist = hwMap.get(Servo.class, ConfigurationInfo.wrist.getDeviceName());
-        elbow = hwMap.get(Servo.class, ConfigurationInfo.elbow.getDeviceName());
+        leftArmHinge = hwMap.get(Servo.class, ConfigurationInfo.leftArmHinge.getDeviceName());
+        rightArmHinge = hwMap.get(Servo.class, ConfigurationInfo.rightArmHinge.getDeviceName());
+        leftBucketHinge = hwMap.get(Servo.class, ConfigurationInfo.leftBucketHinge.getDeviceName());
+        rightBucketHinge = hwMap.get(Servo.class, ConfigurationInfo.rightBucketHinge.getDeviceName());
+
     }
 
-    public void hingeUpOuttake() {
-        wrist.setPosition(wristUp);
-        elbow.setPosition(elbowUp);
+    /**
+     * puts arm hinge to intake position
+     */
+    public void armHingeIn() {
+        armToPosition(ARM_HINGE_IN_POSITION);
+
     }
 
-    public void hingeDownOuttake() {
-        wrist.setPosition(wristDown);
-        elbow.setPosition(elbowDown);
+    /**
+     * puts arm hinge to outake position
+     */
+    public void armHingeOut() {
+        armToPosition(ARM_HiNGE_OUT_POSITION);
+
     }
 
-    public void wristPosition(double position) {
-        wrist.setPosition(position);
+    /**
+     * puts bucket hinge to intake position
+     */
+    public void bucketHingeIn() {
+        bucketToPosition(BUCKET_HINGE_IN_POSITION);
+
     }
 
-    public void elbowPosition(double position) {
-        elbow.setPosition(position);
+    /**
+     * puts bucket hinge to outake position
+     */
+    public void bucketHingeOut() {
+       bucketToPosition(BUCKET_HINGE_OUT_POSITION);
     }
 
-
-
-    public void clamp() {
-        fingers.setPower(1);
+    /**
+     * sets position of the bucket
+     * @param bucketPosition - position bucket goes to
+     */
+    public void bucketToPosition(double bucketPosition) {
+        leftBucketHinge.setPosition(bucketPosition);
+        rightBucketHinge.setPosition(bucketPosition);
     }
 
-    public void release() {
-        fingers.setPower(-1);
+    /**
+     * sets position of the arm
+     * @param armPosition - position arms go to
+     */
+    public void armToPosition(double armPosition) {
+        leftArmHinge.setPosition(armPosition);
+        rightArmHinge.setPosition(armPosition);
     }
 
 }
+
