@@ -23,6 +23,13 @@ public class Drivebase extends Mechanism {
 
     GoBildaPinpointDriver odometryController;
 
+
+    enum DrivebaseState {
+        FORWARD, BACKWARD, LEFT, RIGHT
+
+    }
+
+
     @Override
     public void init(HardwareMap hwMap) {
         frontLeft = hwMap.get(DcMotorEx.class, ConfigurationInfo.leftFront.getDeviceName());

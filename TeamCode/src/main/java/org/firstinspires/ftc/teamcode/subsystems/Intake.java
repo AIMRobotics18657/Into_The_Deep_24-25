@@ -20,11 +20,9 @@ public class Intake extends Mechanism {
     final double UP_HINGE_POSITION = 0.5;
 
     enum HingeState {
-        DOWN, NEUTRAL, UP, CUSTOM
+        UP, NEUTRAL, DOWN, CUSTOM
     }
-
-    HingeState activeHingeState = HingeState.UP;
-
+    private HingeState activeHingeState = HingeState.UP;
     double hingeTargetPosition = UP_HINGE_POSITION;
 
 
@@ -39,13 +37,13 @@ public class Intake extends Mechanism {
     public void loop(AIMPad aimpad) {
         switch(activeHingeState) {
             case DOWN:
-                downState();
+                hingeDownState();
                 break;
             case NEUTRAL:
-                neutralState();
+                hingeNeutralState();
                 break;
             case UP:
-                upState();
+                hingeUpState();
                 break;
             case CUSTOM:
                 break;
@@ -62,18 +60,15 @@ public class Intake extends Mechanism {
         hingeTargetPosition = position;
     }
 
-    public void downState() {
+    public void hingeDownState() {
         hingeTargetPosition = DOWN_HINGE_POSITION;
     }
-
-    public void upState() {
+    public void hingeUpState() {
         hingeTargetPosition = UP_HINGE_POSITION;
     }
-
-    public void neutralState() {
+    public void hingeNeutralState() {
         hingeTargetPosition = NEUTRAL_HINGE_POSITION;
     }
-
 
 
     public void bristlesIn() {bristles.setPower(1);}
