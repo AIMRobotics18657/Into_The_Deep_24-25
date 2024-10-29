@@ -31,27 +31,21 @@ public class IntakeSystem extends Mechanism {
     Servo leftSlidePivot;
     Servo rightSlidePivot;
 
-    private double pivotTargetPosition = UP_HINGE_POSITION;
-
     private final static double DOWN_HINGE_POSITION = -0.5;
     private final static double UP_HINGE_POSITION = 0.5;
 
-    private final static double IN_SLIDES_POSITION = -0.5;
-    private final static double OUT_SLIDES_POSITION = 0.5;
+    public final double SLIDES_RESET_POS = 0;
+    public final double SLIDES_LOW_CLIP_POS = 200;
+    public final double SLIDES_HIGH_CLIP_POS = 400;
+    public final double SLIDES_LOW_BUCKET_POS = 600;
+    public final double SLIDES_HIGH_BUCKET_POS = 800;
+    private double pivotTargetPosition = UP_HINGE_POSITION;
 
-
-    private enum PivotState {
-        PIVOTDOWN, PIVOTUP, PIVOTCUSTOM
+    public enum PivotState {
+        DOWN, UP, CUSTOM
     }
-    private PivotState activePivotState = PivotState.PIVOTDOWN;
 
-
-    enum SlidesState {
-        SLIDESIN, SLIDESOUT, SLIDESCUSTOM
-    }
-    private SlidesState activeSlidesState = SlidesState.SLIDESIN;
-    double slidesTargetPosition = IN_SLIDES_POSITION;
-
+    private PivotState activePivotState = PivotState.DOWN;
 
     @Override
     public void init(HardwareMap hwMap) {
@@ -68,92 +62,39 @@ public class IntakeSystem extends Mechanism {
     @Override
     public void loop(AIMPad aimpad) {
         switch (activePivotState) {
-            case PIVOTDOWN:
-                pivotDownState();
+            case DOWN:
+                downState();
                 break;
-            case PIVOTUP:
-                pivotUpState();
+            case UP:
+                upState();
                 break;
-            case PIVOTCUSTOM:
-                break;
-        }
-        switch(activeSlidesState) {
-            case SLIDESIN:
-                slidesInState();
-                break;
-            case SLIDESOUT:
-                slidesOutState();
-                break;
-            case SLIDESCUSTOM:
+            case CUSTOM:
                 break;
         }
         pivotToPosition(pivotTargetPosition);
-        slidesToPosition(slidesTargetPosition);
     }
 
-    public void setPivotTargetPosition(double pivotTargetPosition) {
-        this.pivotTargetPosition = pivotTargetPosition;
+    public void setActivePivotState(PivotState activePivotState) {
+        this.activePivotState = activePivotState;
     }
 
     public void setPivotStateCustom(double position) {
-        setPivotTargetPosition(PivotState.PIVOTCUSTOM);
+        activePivotState = PivotState.CUSTOM;
         pivotTargetPosition = position;
     }
 
-    public void pivotDownState() {
+    public void downState() {
         pivotTargetPosition = DOWN_HINGE_POSITION;
     }
-    public void pivotUpState() {
+
+    public void upState() {
         pivotTargetPosition = UP_HINGE_POSITION;
     }
-
-
-    public void setSlidesTargetPosition(double slidesTargetPosition) {
-        this.slidesTargetPosition = slidesTargetPosition;
-    }
-
-    public void setSlidesStateCustom(double position) {
-        setSlidesTargetPosition(SlidesState.SLIDESCUSTOM);
-        slidesTargetPosition = position;
-    }
-
-    public void slidesInState() {
-        slidesTargetPosition = IN_SLIDES_POSITION;
-    }
-    public void slidesOutState() {
-        slidesTargetPosition = OUT_SLIDES_POSITION;
-    }
-
 
     public void pivotToPosition(double pivotPosition) {
         double clampedPivotPosition = Math.max(DOWN_HINGE_POSITION, Math.min(pivotPosition, UP_HINGE_POSITION));
         leftSlidePivot.setPosition(clampedPivotPosition);
         rightSlidePivot.setPosition(clampedPivotPosition);
-    }
-
-    public void slidesToPosition(double slidesPosition) {
-        double clampedSlidesPosition = Math.max(IN_SLIDES_POSITION, Math.min(slidesPosition, OUT_SLIDES_POSITION));
-        leftSlidePivot.setPosition(clampedSlidesPosition);
-        rightSlidePivot.setPosition(clampedSlidesPosition);
-    }
-
-    public void systemsCheck(AIMPad aimpad) {
-        loop(aimpad);
-        if (aimpad.isAPressed()) {
-            setPivotTargetPosition(PivotState.PIVOTUP);
-        } else if (aimpad.isBPressed()) {
-            setPivotTargetPosition(PivotState.PIVOTDOWN);
-        } else if (aimpad.isLeftStickMovementEngaged()) {
-            setPivotStateCustom(aimpad.getLeftStickX());
-        }
-        loop(aimpad);
-        if (aimpad.isAPressed()) {
-            setSlidesTargetPosition(SlidesState.SLIDESIN);
-        } else if (aimpad.isBPressed()) {
-            setSlidesTargetPosition(SlidesState.SLIDESOUT);
-        } else if (aimpad.isLeftStickMovementEngaged()) {
-            setSlidesStateCustom(aimpad.getLeftStickX());
-        }
     }
 
 }
