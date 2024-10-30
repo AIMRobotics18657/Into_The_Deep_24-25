@@ -83,19 +83,6 @@ public class Intake extends Mechanism {
         bristles.setPower(bristlesPower);
     }
 
-
-    public void hingeNeutral() {
-        hingeToPosition(NEUTRAL_HINGE_POSITION);
-    }
-
-    public void hingeUp() {
-        hingeToPosition(UP_HINGE_POSITION);
-    }
-
-    public void hingeDown() {
-        hingeToPosition(DOWN_HINGE_POSITION);
-    }
-
     public void hingeToPosition(double hingePosition) {
         double clampedHingePosition = Math.max(DOWN_HINGE_POSITION, Math.min(hingePosition, UP_HINGE_POSITION));
         leftHinge.setPosition(clampedHingePosition);
@@ -103,7 +90,6 @@ public class Intake extends Mechanism {
     }
 
     public void systemsCheck(AIMPad aimpad) {
-        loop(aimpad);
         if (aimpad.isAPressed()) {
             setActiveHingeState(HingeState.UP);
         } else if (aimpad.isBPressed()) {
@@ -113,6 +99,7 @@ public class Intake extends Mechanism {
         } else if (aimpad.isLeftStickMovementEngaged()) {
             setHingeStateCustom(aimpad.getLeftStickX());
         }
+        loop(aimpad);
     }
 
 }

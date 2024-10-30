@@ -14,8 +14,8 @@ public class IntakeSystem extends Mechanism {
     SlidesBase intakeSlides;
 
 
-    private static final DcMotorSimple.Direction leftMotorDirection = DcMotorSimple.Direction.FORWARD;
-    private static final DcMotorSimple.Direction rightMotorDirection = DcMotorSimple.Direction.FORWARD;
+    private final DcMotorSimple.Direction leftMotorDirection = DcMotorSimple.Direction.FORWARD;
+    private final DcMotorSimple.Direction rightMotorDirection = DcMotorSimple.Direction.FORWARD;
     private static final double kP = 0.1;
     private static final double kI = 0.0;
     private static final double kD = 0.0;
@@ -31,21 +31,35 @@ public class IntakeSystem extends Mechanism {
     Servo leftSlidePivot;
     Servo rightSlidePivot;
 
-    private final static double DOWN_HINGE_POSITION = -0.5;
-    private final static double UP_HINGE_POSITION = 0.5;
+    public final double RESET_POS = 0;
+    public final double SHORT_POS = 200;
+    public final double MEDIUM_POS = 400;
+    public final double LONG_POS = 800;
+    private double pivotTargetPosition = HINGE_UP_POSITION;
 
-    public final double SLIDES_RESET_POS = 0;
-    public final double SLIDES_LOW_CLIP_POS = 200;
-    public final double SLIDES_HIGH_CLIP_POS = 400;
-    public final double SLIDES_LOW_BUCKET_POS = 600;
-    public final double SLIDES_HIGH_BUCKET_POS = 800;
-    private double pivotTargetPosition = UP_HINGE_POSITION;
+    private final static double HINGE_DOWN_POSITION = -0.5;
+    private final static double HINGE_UP_POSITION = 0.5;
+
 
     public enum PivotState {
-        DOWN, UP, CUSTOM
+        PIVOT_DOWN, PIVOT_UP, PIVOT_CUSTOM
     }
+    private PivotState activePivotState = PivotState.PIVOT_DOWN;
 
-    private PivotState activePivotState = PivotState.DOWN;
+
+    private enum AutoSlidesPosition {
+        RESET, SHORT, MEDIUM, LONG
+    }
+    private AutoSlidesPosition activeAutoSlidesPosition = AutoSlidesPosition.RESET;
+
+    double slidesTargetPosition = RESET_POS;
+
+
+    private enum SlidesControlState {
+        AUTONOMOUS, MANUAL
+    }
+    private SlidesControlState activeControlState = SlidesControlState.AUTONOMOUS;
+
 
     @Override
     public void init(HardwareMap hwMap) {
@@ -61,17 +75,69 @@ public class IntakeSystem extends Mechanism {
 
     @Override
     public void loop(AIMPad aimpad) {
-        switch (activePivotState) {
-            case DOWN:
-                downState();
+        switch (activeControlState){
+            case AUTONOMOUS:
+
+                //TODO Comment
+                switch(activeAutoSlidesPosition) {
+                    case RESET:
+                        resetState();
+                        break;
+                    case SHORT:
+                        shortState();
+                        break;
+                    case MEDIUM:
+                        mediumState();
+                        break;
+                    case LONG:
+                        longState();
+                        break;
+                    intakeSlides.update();
+                }
                 break;
-            case UP:
-                upState();
-                break;
-            case CUSTOM:
+            case MANUAL:
+                //TODO Bounds
+                if (aimpad.isLeftStickMovementEngaged()) {
+                    intakeSlides.setPower(aimpad.getLeftStickY());
+                } else {
+                    intakeSlides. // TODO HOLD POSITION
+                }
                 break;
         }
+
+        switch (activePivotState) {
+            case PIVOT_DOWN:
+                pivotDownState();
+                break;
+            case PIVOT_UP:
+                pivotUpState();
+                break;
+            case PIVOT_CUSTOM:
+                break;
+        }
+
         pivotToPosition(pivotTargetPosition);
+    }
+
+    public void setActiveControlState(SlidesControlState activeControlState) {
+        this.activeControlState = activeControlState;
+    }
+
+
+    public void resetState() {
+        intakeSlides.setTargetPosition(RESET_POS);
+    }
+
+    public void shortState() {
+        intakeSlides.setTargetPosition(SHORT_POS);
+    }
+
+    public void mediumState() {
+        intakeSlides.setTargetPosition(MEDIUM_POS);
+    }
+
+    public void longState() {
+        intakeSlides.setTargetPosition(LONG_POS);
     }
 
     public void setActivePivotState(PivotState activePivotState) {
@@ -79,22 +145,45 @@ public class IntakeSystem extends Mechanism {
     }
 
     public void setPivotStateCustom(double position) {
-        activePivotState = PivotState.CUSTOM;
+        activePivotState = PivotState.PIVOT_CUSTOM;
         pivotTargetPosition = position;
     }
 
-    public void downState() {
-        pivotTargetPosition = DOWN_HINGE_POSITION;
+    public void pivotDownState() {
+        pivotTargetPosition = HINGE_DOWN_POSITION;
     }
-
-    public void upState() {
-        pivotTargetPosition = UP_HINGE_POSITION;
+    public void pivotUpState() {
+        pivotTargetPosition = HINGE_UP_POSITION;
     }
 
     public void pivotToPosition(double pivotPosition) {
-        double clampedPivotPosition = Math.max(DOWN_HINGE_POSITION, Math.min(pivotPosition, UP_HINGE_POSITION));
+        double clampedPivotPosition = Math.max(HINGE_DOWN_POSITION, Math.min(pivotPosition, HINGE_UP_POSITION));
         leftSlidePivot.setPosition(clampedPivotPosition);
         rightSlidePivot.setPosition(clampedPivotPosition);
+    }
+
+
+    public void setAutoSlidesPosition(AutoSlidesPosition activeAutoSlidesPosition) {
+        setActiveControlState(SlidesControlState.AUTONOMOUS);
+        this.activeAutoSlidesPosition = activeAutoSlidesPosition;
+    }
+
+    public void systemsCheck(AIMPad aimpad) {
+        if (aimpad.isAPressed()) {
+            setActivePivotState(PivotState.PIVOT_UP);
+        } else if (aimpad.isBPressed()) {
+            setActivePivotState(PivotState.PIVOT_DOWN);
+        } else if (aimpad.isLeftStickMovementEngaged()) {
+            setPivotStateCustom(aimpad.getLeftStickX());
+        }
+        if (aimpad.isXPressed()) {
+            setAutoSlidesPosition(AutoSlidesPosition.SHORT);
+        } else if (aimpad.isYPressed()) {
+            setAutoSlidesPosition(AutoSlidesPosition.MEDIUM);
+        } else if (aimpad.isLeftStickMovementEngaged()) {
+            setSlidesStateCustom(aimpad.getLeftStickX());
+        }
+        loop(aimpad);
     }
 
 }
