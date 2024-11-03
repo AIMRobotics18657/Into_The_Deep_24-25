@@ -44,6 +44,14 @@ public class IntakeSystem extends Mechanism {
     public enum PivotState {
         PIVOT_DOWN, PIVOT_UP, PIVOT_CUSTOM
     }
+  
+    public final double SLIDES_RESET_POS = 0;
+    public final double SLIDES_LOW_CLIP_POS = 200;
+    public final double SLIDES_HIGH_CLIP_POS = 400;
+    public final double SLIDES_LOW_BUCKET_POS = 600;
+    public final double SLIDES_HIGH_BUCKET_POS = 800;
+    private double pivotTargetPosition = UP_HINGE_POSITION;
+
     private PivotState activePivotState = PivotState.PIVOT_DOWN;
 
 
@@ -113,7 +121,7 @@ public class IntakeSystem extends Mechanism {
 
         pivotToPosition(pivotTargetPosition);
     }
-
+  
     /**
      * Set the control state of the slides
      * @param activeControlState control state (AUTONOUMOUS or MANUAL)
