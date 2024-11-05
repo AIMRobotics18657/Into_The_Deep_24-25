@@ -26,7 +26,7 @@ When someone else creates a new branch (e.g., for an issue), you may need to fet
 2. Switch to the new branch:
    ```bash
    git checkout <branch-name> // DO NOT INCLUDE THESE --> <>
-   ```
+   
 
 ## Committing and Pushing Upstream
 
