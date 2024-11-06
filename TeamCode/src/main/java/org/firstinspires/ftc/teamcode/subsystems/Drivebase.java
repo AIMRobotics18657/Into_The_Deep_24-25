@@ -42,6 +42,7 @@ public class Drivebase extends Mechanism {
     private final static double XY_PROXIMITY_THRESHOLD = 5;
     private final static double HEADING_PROXIMITY_THRESHOLD = 1;
 
+
     @Override
     public void init(HardwareMap hwMap) {
         frontLeft = hwMap.get(DcMotorEx.class, ConfigurationInfo.leftFront.getDeviceName());
@@ -178,4 +179,9 @@ public class Drivebase extends Mechanism {
             updateAutoNavigation();
         }
     }
+
+    public void systemsCheck(AIMPad gamepad) {
+        loop(gamepad);
+    }
+
 }
