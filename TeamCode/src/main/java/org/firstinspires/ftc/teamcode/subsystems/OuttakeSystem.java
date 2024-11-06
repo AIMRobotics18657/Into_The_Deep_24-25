@@ -4,7 +4,6 @@ import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.subsystems.settings.ConfigurationInfo;
 
@@ -46,7 +45,7 @@ public class OuttakeSystem extends Mechanism {
         outtake = new Outtake();
         outtake.init(hwMap);
 
-        outtakeSlides = new SlidesBase(ConfigurationInfo.leftOutakeSlide.getDeviceName(), ConfigurationInfo.rightOutakeSlide.getDeviceName(), leftMotorDirection, rightMotorDirection, kP, kI, kD, derivativeLowPassGain, integralSumMax, kV, kA, kStatic, kCos, kG, lowPassGain);
+        outtakeSlides = new SlidesBase(ConfigurationInfo.leftOuttakeSlide.getDeviceName(), ConfigurationInfo.rightOuttakeSlide.getDeviceName(), leftMotorDirection, rightMotorDirection, kP, kI, kD, derivativeLowPassGain, integralSumMax, kV, kA, kStatic, kCos, kG, lowPassGain);
         outtakeSlides.init(hwMap);
     }
 
