@@ -5,25 +5,26 @@ import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.subsystems.settings.ConfigurationInfo;
 
 public class Outtake extends Mechanism {
 
     Servo leftArmHinge;
     Servo rightArmHinge;
-    Servo leftBucketHinge;
-    Servo rightBucketHinge;
+    Servo bucketHinge;
+//    Servo rightBucketHinge;
 
-    final double ARM_HINGE_IN_POSITION = 0; //arm hinges to intake position
-    final double ARM_HINGE_OUT_POSITION = 0; //arm hinges to outake position
-    final double BUCKET_HINGE_IN_POSITION = 0; //bucket hinges to intake position
-    final double BUCKET_HINGE_OUT_POSITION = 0; //bucket hinges to outake position
+    final double ARM_HINGE_IN_POSITION = 0.05; //arm hinges to intake position
+    final double ARM_HINGE_OUT_POSITION = 1; //arm hinges to outake position
+    final double BUCKET_HINGE_IN_POSITION = 0.43; //bucket hinges to intake position
+    final double BUCKET_HINGE_OUT_POSITION = 1; //bucket hinges to outake position
 
     enum ArmState {
         ARMIN, ARMOUT, CUSTOM
     }
     ArmState activeArmState = ArmState.ARMIN;
-    double armTargetPosition = ARM_HINGE_OUT_POSITION;
+    double armTargetPosition = ARM_HINGE_IN_POSITION;
 
 
     enum BucketState {
@@ -37,8 +38,10 @@ public class Outtake extends Mechanism {
     public void init(HardwareMap hwMap) {
         leftArmHinge = hwMap.get(Servo.class, ConfigurationInfo.leftArmHinge.getDeviceName());
         rightArmHinge = hwMap.get(Servo.class, ConfigurationInfo.rightArmHinge.getDeviceName());
-        leftBucketHinge = hwMap.get(Servo.class, ConfigurationInfo.leftBucketHinge.getDeviceName());
-        rightBucketHinge = hwMap.get(Servo.class, ConfigurationInfo.rightBucketHinge.getDeviceName());
+        bucketHinge = hwMap.get(Servo.class, ConfigurationInfo.leftBucketHinge.getDeviceName());
+        rightArmHinge.setDirection(Servo.Direction.REVERSE);
+        bucketHinge.setDirection(Servo.Direction.REVERSE);
+//        rightBucketHinge = hwMap.get(Servo.class, ConfigurationInfo.rightBucketHinge.getDeviceName());
 
     }
 
@@ -54,7 +57,7 @@ public class Outtake extends Mechanism {
             case CUSTOM:
                 break;
         }
-
+        armToPosition(armTargetPosition);
         switch(activeBucketState) {
             case BUCKETIN:
                 bucketHingeIn();
@@ -65,13 +68,13 @@ public class Outtake extends Mechanism {
             case CUSTOM:
                 break;
         }
-        armToPosition(armTargetPosition);
         bucketToPosition(bucketTargetPosition);
     }
 
     public void setActiveArmState(ArmState activeArmState) {
         this.activeArmState = activeArmState;
     }
+
     public void setArmStateCustom(double armPosition) {
         setActiveArmState(ArmState.CUSTOM);
         armTargetPosition = armPosition;
@@ -91,7 +94,7 @@ public class Outtake extends Mechanism {
      * puts arm hinge to intake position
      */
     public void armHingeIn() {
-        armToPosition(ARM_HINGE_IN_POSITION);
+        armTargetPosition = ARM_HINGE_IN_POSITION;
 
     }
 
@@ -99,7 +102,7 @@ public class Outtake extends Mechanism {
      * puts arm hinge to outake position
      */
     public void armHingeOut() {
-        armToPosition(ARM_HINGE_OUT_POSITION);
+        armTargetPosition = ARM_HINGE_OUT_POSITION;
 
     }
 
@@ -107,7 +110,7 @@ public class Outtake extends Mechanism {
      * puts bucket hinge to intake position
      */
     public void bucketHingeIn() {
-        bucketToPosition(BUCKET_HINGE_IN_POSITION);
+        bucketTargetPosition = BUCKET_HINGE_IN_POSITION;
 
     }
 
@@ -115,7 +118,7 @@ public class Outtake extends Mechanism {
      * puts bucket hinge to outtake position
      */
     public void bucketHingeOut() {
-       bucketToPosition(BUCKET_HINGE_OUT_POSITION);
+        bucketTargetPosition = BUCKET_HINGE_OUT_POSITION;
     }
 
     /**
@@ -123,8 +126,8 @@ public class Outtake extends Mechanism {
      * @param bucketPosition - position bucket goes to
      */
     public void bucketToPosition(double bucketPosition) {
-        leftBucketHinge.setPosition(bucketPosition);
-        rightBucketHinge.setPosition(bucketPosition);
+        bucketHinge.setPosition(bucketPosition);
+//        rightBucketHinge.setPosition(bucketPosition);
     }
 
     /**

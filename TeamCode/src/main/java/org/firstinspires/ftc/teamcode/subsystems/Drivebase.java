@@ -4,6 +4,7 @@ import com.aimrobotics.aimlib.control.PIDController;
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -48,6 +49,8 @@ public class Drivebase extends Mechanism {
         backLeft = hwMap.get(DcMotorEx.class, ConfigurationInfo.leftBack.getDeviceName());
         frontRight = hwMap.get(DcMotorEx.class, ConfigurationInfo.rightFront.getDeviceName());
         backRight = hwMap.get(DcMotorEx.class, ConfigurationInfo.rightBack.getDeviceName());
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -116,10 +119,10 @@ public class Drivebase extends Mechanism {
 
     private void moveDrivebase(double y, double x, double rx) {
         double denominator = computeDenominator(y, x, rx);
-        frontLeftPower = (y - x + rx) / denominator;
-        backLeftPower = (y + x + rx) / denominator;
-        frontRightPower = (y + x - rx) / denominator;
-        backRightPower = (y - x - rx) / denominator;
+        frontLeftPower = (y + x + rx) / denominator;
+        backLeftPower = (y - x + rx) / denominator;
+        frontRightPower = (y - x - rx) / denominator;
+        backRightPower = (y + x - rx) / denominator;
 
         frontLeft.setPower(frontLeftPower);
         backLeft.setPower(backLeftPower);
@@ -150,6 +153,10 @@ public class Drivebase extends Mechanism {
 
     private double computeDenominator(double y, double x, double rx) {
         return Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+    }
+
+    public void systemsCheck(AIMPad gamepad) {
+        loop(gamepad);
     }
 
     public void setTargetPose(Pose2D targetPose) {

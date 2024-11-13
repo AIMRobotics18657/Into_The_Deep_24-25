@@ -28,6 +28,7 @@ public class SystemsCheck extends OpMode {
     }
 
     TestingState activeTestingState = TestingState.DRIVEBASE;
+
     @Override
     public void init() {
         drivebase.init(hardwareMap);
@@ -45,7 +46,8 @@ public class SystemsCheck extends OpMode {
     @Override
     public void loop() {
         aimPad1.update(gamepad1);
-        aimPad2.update(gamepad2);
+//        aimPad2.update(gamepad2);
+//        gamepad1.copy(gamepad2);
 
         switch (activeTestingState) {
             case DRIVEBASE:
@@ -67,6 +69,10 @@ public class SystemsCheck extends OpMode {
                 outtakeSystemTest();
                 break;
         }
+        telemetry.addData("Advance Pressed", aimPad1.isStartPressed());
+        telemetry.addData("Advance Released", aimPad1.isStartReleased());
+        telemetry.addData("Previous State", aimPad1.getPreviousState());
+        telemetry.addData("Current State", aimPad1.getCurrentState());
         telemetry.addData("Current Testing State", activeTestingState);
         telemetry.update();
     }
@@ -75,14 +81,6 @@ public class SystemsCheck extends OpMode {
     public void drivebaseTest() {
         drivebase.systemsCheck(aimPad1);
         if (aimPad1.isStartPressed()) {
-            activeTestingState = TestingState.INTAKE_SYSTEM;
-        }
-    }
-
-
-    public void intakeSystemTest() {
-        intake.systemsCheck(aimPad1);
-        if (aimPad1.isStartPressed()) {
             activeTestingState = TestingState.INTAKE;
         }
     }
@@ -90,12 +88,12 @@ public class SystemsCheck extends OpMode {
     public void intakeTest() {
         intake.systemsCheck(aimPad1);
         if (aimPad1.isStartPressed()) {
-            activeTestingState = TestingState.OUTTAKE_SYSTEM;
+            activeTestingState = TestingState.INTAKE_SYSTEM;
         }
     }
 
-    public void outtakeSystemTest() {
-        intake.systemsCheck(aimPad1);
+    public void intakeSystemTest() {
+        intakeSystem.systemsCheck(aimPad1, telemetry);
         if (aimPad1.isStartPressed()) {
             activeTestingState = TestingState.OUTTAKE;
         }
@@ -103,6 +101,13 @@ public class SystemsCheck extends OpMode {
 
     public void outtakeTest() {
         outtake.systemsCheck(aimPad1);
+        if (aimPad1.isStartPressed()) {
+            activeTestingState = TestingState.OUTTAKE_SYSTEM;
+        }
+    }
+
+    public void outtakeSystemTest() {
+        outtakeSystem.systemsCheck(aimPad1, telemetry);
         if (aimPad1.isStartPressed()) {
             activeTestingState = TestingState.DRIVEBASE;
         }

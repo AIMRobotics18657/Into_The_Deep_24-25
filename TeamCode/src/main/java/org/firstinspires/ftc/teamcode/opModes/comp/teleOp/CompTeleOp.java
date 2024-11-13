@@ -16,7 +16,7 @@ public class CompTeleOp extends OpMode {
 
     @Override
     public void init() {
-        robot = new Robot();
+        robot = new Robot(true);
         robot.init(hardwareMap);
         aimPad1 = new AIMPad(gamepad1);
         aimPad2 = new AIMPad(gamepad2);

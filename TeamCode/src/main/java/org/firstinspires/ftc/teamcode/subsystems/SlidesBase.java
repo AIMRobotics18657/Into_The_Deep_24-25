@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.aimrobotics.aimlib.control.FeedforwardController;
 import com.aimrobotics.aimlib.control.LowPassFilter;
 import com.aimrobotics.aimlib.control.PIDController;
@@ -16,7 +18,7 @@ public class SlidesBase extends Mechanism {
     private DcMotorEx leftSlide;
     private DcMotorEx rightSlide;
 
-    private final DcMotorEx activeEncoderMotor;
+    private DcMotorEx activeEncoderMotor;
     private double lastActiveEncoderPosition;
 
     String leftSlideName;
@@ -62,8 +64,6 @@ public class SlidesBase extends Mechanism {
         feedforwardController = new FeedforwardController(kV, kA, kStatic, kCos, kG);
         lowPassFilter = new LowPassFilter(lowPassGain);
         controlSystem = new SimpleControlSystem(pidController, feedforwardController, lowPassFilter);
-        activeEncoderMotor = leftSlide;
-        updateLastPosition();
     }
 
     /**
@@ -80,6 +80,8 @@ public class SlidesBase extends Mechanism {
 
         leftSlide.setDirection(leftMotorDirection);
         rightSlide.setDirection(rightMotorDirection);
+        activeEncoderMotor = leftSlide;
+        lastActiveEncoderPosition = 0;
     }
 
     /**

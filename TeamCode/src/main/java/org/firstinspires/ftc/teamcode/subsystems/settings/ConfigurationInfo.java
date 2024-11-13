@@ -11,6 +11,10 @@ public class ConfigurationInfo {
     public static HardwareInterface leftHinge = new HardwareInterface("LH", false, 0);
     public static HardwareInterface rightHinge = new HardwareInterface("RH", false, 0);
 
+    //INTAKE COLOR SENSORS
+    public static HardwareInterface bottomSensor = new HardwareInterface("BCS", false, 0);
+    public static HardwareInterface sideSensor = new HardwareInterface("SCS", false, 0);
+
     // INTAKE SLIDES
     public static HardwareInterface leftIntakeSlide = new HardwareInterface("LIS", false, 2);
     public static HardwareInterface rightIntakeSlide = new HardwareInterface("RIS", true, 2);
@@ -24,12 +28,12 @@ public class ConfigurationInfo {
     public static HardwareInterface rightOuttakeSlide = new HardwareInterface("ROS", true, 2);
 
     // OUTAKE ARM HINGES
-    public static HardwareInterface leftArmHinge = new HardwareInterface("OLAH", true, 0);
-    public static HardwareInterface rightArmHinge = new HardwareInterface("ORAH", true, 0);
+    public static HardwareInterface leftArmHinge = new HardwareInterface("LOAH", true, 0);
+    public static HardwareInterface rightArmHinge = new HardwareInterface("ROAH", true, 0);
 
     // OUTAKE BUCKET HINGES
-    public static HardwareInterface leftBucketHinge = new HardwareInterface("OLBH", false, 0);
-    public static HardwareInterface rightBucketHinge = new HardwareInterface("ORBH", false, 0);
+    public static HardwareInterface leftBucketHinge = new HardwareInterface("BH", false, 0);
+//    public static HardwareInterface rightBucketHinge = new HardwareInterface("ORBH", false, 0);
 
     // DRIVEBASE
     public static HardwareInterface leftFront = new HardwareInterface("FLD", true, 1);

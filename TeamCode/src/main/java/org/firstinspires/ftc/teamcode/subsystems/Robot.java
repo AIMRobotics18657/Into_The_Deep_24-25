@@ -8,21 +8,28 @@ public class Robot extends Mechanism {
 
     public Drivebase drivebase;
     public Hubs hubs;
-    //TODO Add other subsystems here
+    public ScoringSystem scoringSystem;
+
+    boolean isRed;
+
+    public Robot(boolean isRed) {
+        this.isRed = isRed;
+    }
 
     @Override
     public void init(HardwareMap hwMap) {
         drivebase = new Drivebase();
         hubs = new Hubs();
+        scoringSystem = new ScoringSystem(isRed);
 
         drivebase.init(hwMap);
         hubs.init(hwMap);
-        //TODO Initialize other subsystems here
+        scoringSystem.init(hwMap);
     }
 
     @Override
     public void loop(AIMPad gamepad1, AIMPad gamepad2) {
-        drivebase.drive(gamepad1);
-        //TODO Loop other subsystems here
+        drivebase.loop(gamepad1);
+        scoringSystem.loop(gamepad1, gamepad2);
     }
 }
