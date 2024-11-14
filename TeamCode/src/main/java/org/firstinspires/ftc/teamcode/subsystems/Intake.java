@@ -134,7 +134,7 @@ public class Intake extends Mechanism {
     public void telemetry(Telemetry telemetry) {
     }
 
-    public void systemsCheck(AIMPad aimpad) {
+    public void systemsCheck(AIMPad aimpad, Telemetry telemetry) {
         if (aimpad.isAPressed()) {
             setActiveHingeState(HingeState.UP);
         } else if (aimpad.isBPressed()) {

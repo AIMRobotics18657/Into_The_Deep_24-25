@@ -161,7 +161,7 @@ public class Drivebase extends Mechanism {
 
     }
 
-    public void systemsCheck(AIMPad gamepad) {
+    public void systemsCheck(AIMPad gamepad, Telemetry telemetry) {
         loop(gamepad);
     }
 

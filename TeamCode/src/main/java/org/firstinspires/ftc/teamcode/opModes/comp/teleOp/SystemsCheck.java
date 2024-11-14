@@ -78,14 +78,14 @@ public class SystemsCheck extends OpMode {
 
 
     public void drivebaseTest() {
-        drivebase.systemsCheck(aimPad1);
+        drivebase.systemsCheck(aimPad1, telemetry);
         if (aimPad1.isStartPressed()) {
             activeTestingState = TestingState.INTAKE;
         }
     }
 
     public void intakeTest() {
-        intake.systemsCheck(aimPad1);
+        intake.systemsCheck(aimPad1, telemetry);
         if (aimPad1.isStartPressed()) {
             activeTestingState = TestingState.INTAKE_SYSTEM;
         }
@@ -99,7 +99,7 @@ public class SystemsCheck extends OpMode {
     }
 
     public void outtakeTest() {
-        outtake.systemsCheck(aimPad1);
+        outtake.systemsCheck(aimPad1, telemetry);
         if (aimPad1.isStartPressed()) {
             activeTestingState = TestingState.OUTTAKE_SYSTEM;
         }

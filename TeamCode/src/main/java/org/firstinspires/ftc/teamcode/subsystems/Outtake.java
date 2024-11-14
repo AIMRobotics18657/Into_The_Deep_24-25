@@ -148,7 +148,7 @@ public class Outtake extends Mechanism {
      *
      * Systems Check
      */
-    public void systemsCheck(AIMPad aimpad) {
+    public void systemsCheck(AIMPad aimpad, Telemetry telemetry) {
         loop(aimpad);
         if (aimpad.isAPressed()) {
             setActiveArmState(ArmState.ARMIN);
