@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.gb.pinpoint.driver.GoBildaPinpointDriver;
@@ -153,6 +154,11 @@ public class Drivebase extends Mechanism {
 
     private double computeDenominator(double y, double x, double rx) {
         return Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+    }
+
+    @Override
+    public void telemetry(Telemetry telemetry) {
+
     }
 
     public void systemsCheck(AIMPad gamepad) {
