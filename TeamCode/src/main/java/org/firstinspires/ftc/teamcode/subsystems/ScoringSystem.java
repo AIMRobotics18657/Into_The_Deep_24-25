@@ -25,7 +25,7 @@ public class ScoringSystem extends Mechanism {
     }
 
     enum ScoringState {
-        RESETTING, SEARCHING, TRANSITIONING1, TRANSITIONING2, SLIDES_POSITIONING
+        RESETTING, SEARCHING, TRANSITIONING1, TRANSITIONING2, SLIDES_POSITIONING, SPECIMEN
     }
 
     ScoringState activeScoringState = ScoringState.RESETTING;
@@ -55,6 +55,9 @@ public class ScoringSystem extends Mechanism {
             case SLIDES_POSITIONING:
                 slidesPositioningState(aimpad, aimpad2);
                 break;
+            case SPECIMEN:
+                specimenState(aimpad, aimpad2);
+                break;
         }
         intakeSystem.loop(aimpad);
         outtakeSystem.loop(aimpad);
@@ -77,8 +80,6 @@ public class ScoringSystem extends Mechanism {
     }
     public void searchingState(AIMPad aimpad, AIMPad aimpad2) {
         intakeSystem.intake.setActiveHingeState(Intake.HingeState.NEUTRAL);
-        intakeSystem.intake.bristlesIn();
-        intakeSystem.setAutoSlidesPosition(IntakeSystem.AutoSlidesPosition.SHORT);
 
         if (aimpad.isRightBumperPressed()) {
             intakeSystem.setAutoSlidesPosition(intakeSystem.getNextSlidePosition(intakeSystem.activeAutoSlidesPosition));
@@ -86,47 +87,80 @@ public class ScoringSystem extends Mechanism {
             intakeSystem.setAutoSlidesPosition(intakeSystem.getPreviousSlidePosition(intakeSystem.activeAutoSlidesPosition));
         }
 
-        if (aimpad.isBHeld()) {
+        if (aimpad.isAHeld()) {
             intakeSystem.intake.setActiveHingeState(Intake.HingeState.DOWN);
         }
 
-        if (intakeSystem.intake.getBlockColor().equals("YELLOW")  || intakeSystem.intake.getBlockColor().equals(targetBlockColor) || aimpad.isAPressed()) {
+        if (aimpad2.getLeftTrigger() > GamepadSettings.GP1_TRIGGER_DEADZONE) {
+            intakeSystem.intake.bristlesAtPower(-aimpad2.getLeftTrigger());
+        } else if (aimpad2.getRightTrigger() > GamepadSettings.GP1_TRIGGER_DEADZONE) {
+            intakeSystem.intake.bristlesAtPower(aimpad2.getRightTrigger());
+        } else {
+            intakeSystem.intake.bristlesIn();
+        }
+
+        if (intakeSystem.intake.getBlockColor().equals("YELLOW")  || intakeSystem.intake.getBlockColor().equals(targetBlockColor) || aimpad2.isAPressed()) {
             intakeSystem.intake.bristlesOff();
             setActiveScoringState(ScoringState.TRANSITIONING1);
         }
     }
 
     public void transitioning1State(AIMPad aimpad, AIMPad aimpad2) {
+        if (aimpad2.isBHeld()) {
+            intakeSystem.intake.bristlesOut();
+        }
         intakeSystem.intake.setActiveHingeState(Intake.HingeState.UP);
         intakeSystem.setAutoSlidesPosition(IntakeSystem.AutoSlidesPosition.RESET);
         if (intakeSystem.intakeSlides.isAtTargetPosition()) {
-            setActiveScoringState(ScoringState.TRANSITIONING2);
+            if (aimpad.isAPressed()) {
+                setActiveScoringState(ScoringState.TRANSITIONING2);
+            } else if (aimpad2.isYPressed()) {
+                setActiveScoringState(ScoringState.SEARCHING);
+            }
         }
     }
 
     public void transitioning2State(AIMPad aimpad, AIMPad aimpad2) {
-        intakeSystem.intake.bristlesIn();
-        if (intakeSystem.intake.getBlockColor().equals("NONE") && aimpad.isAPressed()) {
-            outtakeSystem.outtake.setActiveArmState(Outtake.ArmState.ARMOUT);
-            intakeSystem.intake.bristlesOff();
-            setActiveScoringState(ScoringState.SLIDES_POSITIONING);
+        if (aimpad2.isBHeld()) {
+            intakeSystem.intake.bristlesOut();
+        } else {
+            intakeSystem.intake.bristlesAtPower(.7);
+        }
+        if (intakeSystem.intake.getBlockColor().equals("NONE")) {
+            if (aimpad.isAPressed()) {
+                outtakeSystem.outtake.setActiveArmState(Outtake.ArmState.ARMOUT);
+                intakeSystem.intake.bristlesOff();
+                setActiveScoringState(ScoringState.SLIDES_POSITIONING);
+            } else if (aimpad2.isYPressed()) {
+                setActiveScoringState(ScoringState.SEARCHING);
+            }
         }
     }
 
     public void slidesPositioningState(AIMPad aimpad, AIMPad aimpad2) {
-        if (aimpad.isDPadLeftPressed()) {
+        if (aimpad.isLeftBumperPressed()) {
             outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.TALL);
-        } else if (aimpad.isDPadRightPressed()) {
+        } else if (aimpad.isRightBumperPressed()) {
             outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.SHORT);
-        } else if (Math.abs(aimpad.getRightStickY()) > GamepadSettings.GP1_STICK_DEADZONE) {
-            outtakeSystem.setActiveControlState(OuttakeSystem.SlidesControlState.MANUAL);
         }
+//        else if (Math.abs(aimpad.getRightStickY()) > GamepadSettings.GP1_STICK_DEADZONE) {
+//            outtakeSystem.setActiveControlState(OuttakeSystem.SlidesControlState.MANUAL);
+//        }
 
-        if (aimpad.getLeftTrigger() > GamepadSettings.GP1_TRIGGER_DEADZONE) {
+        if (aimpad.getRightTrigger() > GamepadSettings.GP1_TRIGGER_DEADZONE) {
             outtakeSystem.outtake.setActiveBucketState(Outtake.BucketState.BUCKETOUT);
         }
 
-        if (outtakeSystem.outtake.activeBucketState == Outtake.BucketState.BUCKETOUT && aimpad.isAPressed()) {
+        if ((outtakeSystem.outtake.activeBucketState == Outtake.BucketState.BUCKETOUT && aimpad.isAPressed() || aimpad2.isYPressed())) {
+            setActiveScoringState(ScoringState.RESETTING);
+        }
+    }
+
+    public void specimenState(AIMPad aimpad, AIMPad aimpad2) {
+        intakeSystem.setAutoSlidesPosition(IntakeSystem.AutoSlidesPosition.RESET);
+        intakeSystem.intake.setActiveHingeState(Intake.HingeState.UP);
+        intakeSystem.intake.bristlesIn();
+        if (aimpad.isAPressed()) {
             setActiveScoringState(ScoringState.RESETTING);
         }
     }

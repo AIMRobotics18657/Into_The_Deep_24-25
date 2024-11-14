@@ -17,16 +17,16 @@ public class Intake extends Mechanism {
     CRServo bristles;
     Servo leftHinge;
     Servo rightHinge;
-    final double DOWN_HINGE_POSITION = 0.17;
+    final double DOWN_HINGE_POSITION = 0.14;
     final double NEUTRAL_HINGE_POSITION = 0.35;
     final double UP_HINGE_POSITION = 0.76;
 
     ColorSensor bottomSensor;
     ColorSensor sideSensor;
 
-    int[] redBlockValues = {0, 0, 0}; // TODO Add in the values
-    int[] blueBlockValues = {0, 0, 0};
-    int[] yellowBlockValues = {0, 0, 0};
+    int[] redBlockValues = {1400, 400, 150};
+    int[] blueBlockValues = {150, 400, 1000};
+    int[] yellowBlockValues = {1200, 1200, 150};
 
     enum HingeState {
         UP, NEUTRAL, DOWN, CUSTOM
@@ -84,9 +84,9 @@ public class Intake extends Mechanism {
     }
 
 
-    public void bristlesIn() {bristles.setPower(.2);}
+    public void bristlesIn() {bristles.setPower(.4);}
 
-    public void bristlesOut() {bristles.setPower(-.2);}
+    public void bristlesOut() {bristles.setPower(-.7);}
 
     public void bristlesOff(){
         bristles.setPower(0);
@@ -124,9 +124,9 @@ public class Intake extends Mechanism {
      * @return the detected block color as a String
      */
     public String getBlockColor() {
+        if (isBlockYellow()) return "YELLOW";
         if (isBlockRed()) return "RED";
         if (isBlockBlue()) return "BLUE";
-        if (isBlockYellow()) return "YELLOW";
         return "NONE";
     }
 
@@ -146,6 +146,10 @@ public class Intake extends Mechanism {
         }
         bristlesAtPower(aimpad.getRightStickY());
         loop(aimpad);
+        telemetry.addData("Block Color", getBlockColor());
+        telemetry.addData("Bottom Sensor Red", bottomSensor.red());
+        telemetry.addData("Bottom Sensor Green", bottomSensor.green());
+        telemetry.addData("Bottom Sensor Blue", bottomSensor.blue());
     }
 
 }
