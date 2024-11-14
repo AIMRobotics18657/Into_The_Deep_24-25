@@ -5,6 +5,7 @@ import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.subsystems.settings.ConfigurationInfo;
 
@@ -137,6 +138,10 @@ public class Outtake extends Mechanism {
     public void armToPosition(double armPosition) {
         leftArmHinge.setPosition(armPosition);
         rightArmHinge.setPosition(armPosition);
+    }
+
+    @Override
+    public void telemetry(Telemetry telemetry) {
     }
 
     /**
