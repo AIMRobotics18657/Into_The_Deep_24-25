@@ -4,12 +4,13 @@ import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.settings.GamepadSettings;
 
 public class ScoringSystem extends Mechanism {
 
-    IntakeSystem intakeSystem;
-    OuttakeSystem outtakeSystem;
+    IntakeSystem intakeSystem = new IntakeSystem();
+    OuttakeSystem outtakeSystem = new OuttakeSystem();
 
     boolean isRed;
     String targetBlockColor;
@@ -32,10 +33,7 @@ public class ScoringSystem extends Mechanism {
 
     @Override
     public void init(HardwareMap hwMap) {
-        intakeSystem = new IntakeSystem();
         intakeSystem.init(hwMap);
-
-        outtakeSystem = new OuttakeSystem();
         outtakeSystem.init(hwMap);
     }
 
@@ -59,6 +57,7 @@ public class ScoringSystem extends Mechanism {
                 break;
         }
         intakeSystem.loop(aimpad);
+        outtakeSystem.loop(aimpad);
     }
 
     public void setActiveScoringState(ScoringState activeScoringState) {
@@ -91,7 +90,7 @@ public class ScoringSystem extends Mechanism {
             intakeSystem.intake.setActiveHingeState(Intake.HingeState.DOWN);
         }
 
-        if (intakeSystem.intake.getBlockColor().equals("YELLOW")  || intakeSystem.intake.getBlockColor().equals(targetBlockColor)) {
+        if (intakeSystem.intake.getBlockColor().equals("YELLOW")  || intakeSystem.intake.getBlockColor().equals(targetBlockColor) || aimpad.isAPressed()) {
             intakeSystem.intake.bristlesOff();
             setActiveScoringState(ScoringState.TRANSITIONING1);
         }
@@ -107,8 +106,9 @@ public class ScoringSystem extends Mechanism {
 
     public void transitioning2State(AIMPad aimpad, AIMPad aimpad2) {
         intakeSystem.intake.bristlesIn();
-        if (intakeSystem.intake.getBlockColor().equals("NONE")) {
+        if (intakeSystem.intake.getBlockColor().equals("NONE") && aimpad.isAPressed()) {
             outtakeSystem.outtake.setActiveArmState(Outtake.ArmState.ARMOUT);
+            intakeSystem.intake.bristlesOff();
             setActiveScoringState(ScoringState.SLIDES_POSITIONING);
         }
     }
@@ -118,7 +118,7 @@ public class ScoringSystem extends Mechanism {
             outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.TALL);
         } else if (aimpad.isDPadRightPressed()) {
             outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.SHORT);
-        } else if (Math.abs(aimpad.getLeftStickY()) > GamepadSettings.GP1_STICK_DEADZONE) {
+        } else if (Math.abs(aimpad.getRightStickY()) > GamepadSettings.GP1_STICK_DEADZONE) {
             outtakeSystem.setActiveControlState(OuttakeSystem.SlidesControlState.MANUAL);
         }
 
@@ -129,6 +129,11 @@ public class ScoringSystem extends Mechanism {
         if (outtakeSystem.outtake.activeBucketState == Outtake.BucketState.BUCKETOUT && aimpad.isAPressed()) {
             setActiveScoringState(ScoringState.RESETTING);
         }
+    }
+
+    @Override
+    public void telemetry(Telemetry telemetry) {
+        telemetry.addData("Automation State", activeScoringState);
     }
 }
 

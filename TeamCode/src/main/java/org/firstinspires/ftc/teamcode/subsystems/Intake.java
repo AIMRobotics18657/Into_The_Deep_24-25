@@ -16,7 +16,7 @@ public class Intake extends Mechanism {
     CRServo bristles;
     Servo leftHinge;
     Servo rightHinge;
-    final double DOWN_HINGE_POSITION = 0.09;
+    final double DOWN_HINGE_POSITION = 0.17;
     final double NEUTRAL_HINGE_POSITION = 0.35;
     final double UP_HINGE_POSITION = 0.76;
 
@@ -83,9 +83,9 @@ public class Intake extends Mechanism {
     }
 
 
-    public void bristlesIn() {bristles.setPower(1);}
+    public void bristlesIn() {bristles.setPower(.2);}
 
-    public void bristlesOut() {bristles.setPower(-1);}
+    public void bristlesOut() {bristles.setPower(-.2);}
 
     public void bristlesOff(){
         bristles.setPower(0);

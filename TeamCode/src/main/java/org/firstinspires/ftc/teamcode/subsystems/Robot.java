@@ -4,6 +4,8 @@ import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class Robot extends Mechanism {
 
     public Drivebase drivebase;
@@ -31,5 +33,10 @@ public class Robot extends Mechanism {
     public void loop(AIMPad gamepad1, AIMPad gamepad2) {
         drivebase.loop(gamepad1);
         scoringSystem.loop(gamepad1, gamepad2);
+    }
+
+    @Override
+    public void telemetry(Telemetry telemetry) {
+        scoringSystem.telemetry(telemetry);
     }
 }

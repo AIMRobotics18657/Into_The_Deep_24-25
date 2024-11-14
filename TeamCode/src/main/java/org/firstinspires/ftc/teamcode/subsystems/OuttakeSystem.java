@@ -30,7 +30,7 @@ public class OuttakeSystem extends Mechanism {
 
     public static final double RESET_POS = 0;
     public static final double SHORT_POS = 1500;
-    public static final double TALL_POS = 3000;
+    public static final double TALL_POS = 3500;
 
     public enum AutoSlidesPosition {
         RESET, SHORT, TALL
@@ -77,6 +77,7 @@ public class OuttakeSystem extends Mechanism {
                 }
                 break;
         }
+        outtake.loop(aimpad);
     }
 
     public void setActiveControlState(OuttakeSystem.SlidesControlState activeControlState) {

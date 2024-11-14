@@ -20,9 +20,9 @@ public class IntakeSystem extends Mechanism {
 
     private final DcMotorSimple.Direction leftMotorDirection = DcMotorSimple.Direction.FORWARD;
     private final DcMotorSimple.Direction rightMotorDirection = DcMotorSimple.Direction.REVERSE;
-    private static final double kP = 0.0085;
+    private static final double kP = 0.006;
     private static final double kI = 0.00001;
-    private static final double kD = 0.00008;
+    private static final double kD = 0.00002;
     private static final double derivativeLowPassGain = 0.15;
     private static final double integralSumMax = 2500;
     private static final double kV = 0.01;
