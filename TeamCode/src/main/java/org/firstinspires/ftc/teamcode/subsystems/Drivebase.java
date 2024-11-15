@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.gb.pinpoint.driver.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.gb.pinpoint.driver.Pose2D;
 import org.firstinspires.ftc.teamcode.subsystems.settings.ConfigurationInfo;
 import org.firstinspires.ftc.teamcode.subsystems.settings.GamepadSettings;
+import org.firstinspires.ftc.teamcode.util.InputModification;
 
 public class Drivebase extends Mechanism {
 
@@ -112,9 +113,9 @@ public class Drivebase extends Mechanism {
     }
 
     private void manualDrive(AIMPad gamepad) {
-        double y = poweredInput(deadzonedStickInput(-gamepad.getLeftStickY()));
-        double x = poweredInput(deadzonedStickInput(gamepad.getLeftStickX()));
-        double rx = poweredInput(deadzonedStickInput(gamepad.getRightStickX()));
+        double y = InputModification.poweredInput(deadzonedStickInput(-gamepad.getLeftStickY()), GamepadSettings.EXPONENT_MODIFIER);
+        double x = InputModification.poweredInput(deadzonedStickInput(gamepad.getLeftStickX()), GamepadSettings.EXPONENT_MODIFIER);
+        double rx = InputModification.poweredInput(deadzonedStickInput(gamepad.getRightStickX()), GamepadSettings.EXPONENT_MODIFIER);
         moveDrivebase(y, x, rx);
     }
 
@@ -136,19 +137,6 @@ public class Drivebase extends Mechanism {
             return input;
         } else {
             return 0;
-        }
-    }
-
-    /**
-     * Returns the powered input
-     * @param base base input
-     * @return base to the EXPONENT_MODIFIER power
-     */
-    private double poweredInput(double base) {
-        if (GamepadSettings.EXPONENT_MODIFIER % 2 == 0) {
-            return Math.pow(base, GamepadSettings.EXPONENT_MODIFIER) * Math.signum(base);
-        } else {
-            return Math.pow(base, GamepadSettings.EXPONENT_MODIFIER);
         }
     }
 

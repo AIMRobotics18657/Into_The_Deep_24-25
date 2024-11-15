@@ -15,6 +15,8 @@ public class ConfigurationInfo {
     public static HardwareInterface bottomSensor = new HardwareInterface("BCS", false, 0);
     public static HardwareInterface sideSensor = new HardwareInterface("SCS", false, 0);
 
+    public static HardwareInterface specimenGrabber = new HardwareInterface("SG", false, 0);
+
     // INTAKE SLIDES
     public static HardwareInterface leftIntakeSlide = new HardwareInterface("LIS", false, 2);
     public static HardwareInterface rightIntakeSlide = new HardwareInterface("RIS", true, 2);

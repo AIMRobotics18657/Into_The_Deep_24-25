@@ -6,14 +6,18 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.settings.GamepadSettings;
+import org.firstinspires.ftc.teamcode.util.InputModification;
 
 public class ScoringSystem extends Mechanism {
 
     IntakeSystem intakeSystem = new IntakeSystem();
     OuttakeSystem outtakeSystem = new OuttakeSystem();
+    SpecimenGrabber specimenGrabber = new SpecimenGrabber();
 
     boolean isRed;
     String targetBlockColor;
+
+    boolean isBucketMode = true;
 
     public ScoringSystem(boolean isRed) {
         this.isRed = isRed;
@@ -25,7 +29,7 @@ public class ScoringSystem extends Mechanism {
     }
 
     enum ScoringState {
-        RESETTING, SEARCHING, TRANSITIONING1, TRANSITIONING2, SLIDES_POSITIONING, SPECIMEN
+        RESETTING, SEARCHING, TRANSITIONING1, TRANSITIONING2, SLIDES_POSITIONING, SPECIMEN_POSITIONING, SPECIMEN_SCORE
     }
 
     ScoringState activeScoringState = ScoringState.RESETTING;
@@ -35,6 +39,7 @@ public class ScoringSystem extends Mechanism {
     public void init(HardwareMap hwMap) {
         intakeSystem.init(hwMap);
         outtakeSystem.init(hwMap);
+        specimenGrabber.init(hwMap);
     }
 
     @Override
@@ -55,12 +60,16 @@ public class ScoringSystem extends Mechanism {
             case SLIDES_POSITIONING:
                 slidesPositioningState(aimpad, aimpad2);
                 break;
-            case SPECIMEN:
-                specimenState(aimpad, aimpad2);
+            case SPECIMEN_POSITIONING:
+                specimenPositioningState(aimpad, aimpad2);
+                break;
+            case SPECIMEN_SCORE:
+                specimenScoreState(aimpad, aimpad2);
                 break;
         }
         intakeSystem.loop(aimpad);
         outtakeSystem.loop(aimpad);
+        specimenGrabber.loop(aimpad);
     }
 
     public void setActiveScoringState(ScoringState activeScoringState) {
@@ -74,6 +83,7 @@ public class ScoringSystem extends Mechanism {
         outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.RESET);
         outtakeSystem.outtake.setActiveArmState(Outtake.ArmState.ARMIN);
         outtakeSystem.outtake.setActiveBucketState(Outtake.BucketState.BUCKETIN);
+        specimenGrabber.setGrabberState(SpecimenGrabber.GrabberState.RELEASE);
         if (intakeSystem.intakeSlides.isAtTargetPosition() && outtakeSystem.outtakeSlides.isAtTargetPosition()){
             setActiveScoringState(ScoringState.SEARCHING);
         }
@@ -81,34 +91,42 @@ public class ScoringSystem extends Mechanism {
     public void searchingState(AIMPad aimpad, AIMPad aimpad2) {
         intakeSystem.intake.setActiveHingeState(Intake.HingeState.NEUTRAL);
 
+        // IntakeSlides control
         if (aimpad.isRightBumperPressed()) {
             intakeSystem.setAutoSlidesPosition(intakeSystem.getNextSlidePosition(intakeSystem.activeAutoSlidesPosition));
         } else if (aimpad.isLeftBumperPressed()) {
             intakeSystem.setAutoSlidesPosition(intakeSystem.getPreviousSlidePosition(intakeSystem.activeAutoSlidesPosition));
         }
 
+        // Intake hinge control
         if (aimpad.isAHeld()) {
             intakeSystem.intake.setActiveHingeState(Intake.HingeState.DOWN);
         }
 
+        // Bristle Control and AIMPad 2 manual override
         if (aimpad2.getLeftTrigger() > GamepadSettings.GP1_TRIGGER_DEADZONE) {
-            intakeSystem.intake.bristlesAtPower(-aimpad2.getLeftTrigger());
+            intakeSystem.intake.bristlesAtPower(-InputModification.poweredInput(aimpad2.getLeftTrigger(), 3));
         } else if (aimpad2.getRightTrigger() > GamepadSettings.GP1_TRIGGER_DEADZONE) {
-            intakeSystem.intake.bristlesAtPower(aimpad2.getRightTrigger());
+            intakeSystem.intake.bristlesAtPower(InputModification.poweredInput(aimpad2.getRightTrigger(), 3));
         } else {
             intakeSystem.intake.bristlesIn();
         }
 
+        if (aimpad2.isDPadUpPressed() && aimpad2.isYPressed()) {
+            specimenGrabber.setGrabberState(SpecimenGrabber.GrabberState.GRAB);
+            setActiveScoringState(ScoringState.SPECIMEN_POSITIONING);
+        }
+
+        // Block detection
         if (intakeSystem.intake.getBlockColor().equals("YELLOW")  || intakeSystem.intake.getBlockColor().equals(targetBlockColor) || aimpad2.isAPressed()) {
             intakeSystem.intake.bristlesOff();
-            setActiveScoringState(ScoringState.TRANSITIONING1);
+            if (isBucketMode) {
+                setActiveScoringState(ScoringState.TRANSITIONING1);
+            }
         }
     }
 
     public void transitioning1State(AIMPad aimpad, AIMPad aimpad2) {
-        if (aimpad2.isBHeld()) {
-            intakeSystem.intake.bristlesOut();
-        }
         intakeSystem.intake.setActiveHingeState(Intake.HingeState.UP);
         intakeSystem.setAutoSlidesPosition(IntakeSystem.AutoSlidesPosition.RESET);
         if (intakeSystem.intakeSlides.isAtTargetPosition()) {
@@ -121,11 +139,7 @@ public class ScoringSystem extends Mechanism {
     }
 
     public void transitioning2State(AIMPad aimpad, AIMPad aimpad2) {
-        if (aimpad2.isBHeld()) {
-            intakeSystem.intake.bristlesOut();
-        } else {
-            intakeSystem.intake.bristlesAtPower(.7);
-        }
+        intakeSystem.intake.bristlesAtPower(.7);
         if (intakeSystem.intake.getBlockColor().equals("NONE")) {
             if (aimpad.isAPressed()) {
                 outtakeSystem.outtake.setActiveArmState(Outtake.ArmState.ARMOUT);
@@ -156,13 +170,32 @@ public class ScoringSystem extends Mechanism {
         }
     }
 
-    public void specimenState(AIMPad aimpad, AIMPad aimpad2) {
+    public void specimenPositioningState(AIMPad aimpad, AIMPad aimpad2) {
         intakeSystem.setAutoSlidesPosition(IntakeSystem.AutoSlidesPosition.RESET);
         intakeSystem.intake.setActiveHingeState(Intake.HingeState.UP);
-        intakeSystem.intake.bristlesIn();
-        if (aimpad.isAPressed()) {
+        intakeSystem.intake.bristlesOff();
+        if (aimpad.isLeftBumperPressed()) {
+            outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.SPECIMEN_HIGH);
+        } else if (aimpad.isRightBumperPressed()) {
+            outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.SPECIMEN_LOW);
+        }
+
+        if (aimpad2.isAPressed()) {
+            setActiveScoringState(ScoringState.SPECIMEN_SCORE);
+        }
+    }
+
+    public void specimenScoreState(AIMPad aimpad, AIMPad aimpad2) {
+        if (outtakeSystem.activeAutoSlidesPosition == OuttakeSystem.AutoSlidesPosition.SPECIMEN_HIGH) {
+            outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.SPECIMEN_HIGH_DROP);
+        } else {
+            outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.SPECIMEN_LOW_DROP);
+        }
+
+        if (outtakeSystem.outtakeSlides.isAtTargetPosition() && aimpad2.isAPressed()) {
             setActiveScoringState(ScoringState.RESETTING);
         }
+
     }
 
     @Override

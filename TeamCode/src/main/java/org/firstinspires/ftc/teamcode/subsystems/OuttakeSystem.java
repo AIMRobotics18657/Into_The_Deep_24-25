@@ -31,11 +31,15 @@ public class OuttakeSystem extends Mechanism {
     public static final double RESET_POS = 0;
     public static final double SHORT_POS = 1500;
     public static final double TALL_POS = 3100;
+    public static final double SPECIMEN_LOW_POS = 1000;
+    public static final double SPECIMEN_LOW_DROP_POS = 850;
+    public static final double SPECIMEN_HIGH_POS = 2000;
+    public static final double SPECIMEN_HIGH_DROP_POS = 1850;
 
     public enum AutoSlidesPosition {
-        RESET, SHORT, TALL
+        RESET, SHORT, TALL, SPECIMEN_LOW, SPECIMEN_HIGH, SPECIMEN_LOW_DROP, SPECIMEN_HIGH_DROP
     }
-    private OuttakeSystem.AutoSlidesPosition activeAutoSlidesPosition = OuttakeSystem.AutoSlidesPosition.RESET;
+    public OuttakeSystem.AutoSlidesPosition activeAutoSlidesPosition = OuttakeSystem.AutoSlidesPosition.RESET;
 
     public enum SlidesControlState {
         AUTONOMOUS, MANUAL
@@ -53,7 +57,7 @@ public class OuttakeSystem extends Mechanism {
     }
 
     @Override
-    public void loop(AIMPad aimpad) {
+    public void loop(AIMPad aimpad, AIMPad aimpad2) {
         switch (activeControlState){
             case AUTONOMOUS:
                 switch(activeAutoSlidesPosition) {
@@ -66,11 +70,23 @@ public class OuttakeSystem extends Mechanism {
                     case TALL:
                         tallState();
                         break;
+                    case SPECIMEN_LOW:
+                        specimenLowState();
+                        break;
+                    case SPECIMEN_HIGH:
+                        specimenHighState();
+                        break;
+                    case SPECIMEN_LOW_DROP:
+                        specimenLowDropState();
+                        break;
+                    case SPECIMEN_HIGH_DROP:
+                        specimenHighDropState();
+                        break;
                 }
                 outtakeSlides.update();
                 break;
             case MANUAL:
-                if (Math.abs(aimpad.getLeftStickY()) > GamepadSettings.GP1_STICK_DEADZONE && !outtakeSlides.currentSpikeDetected()) {
+                if (Math.abs(aimpad2.getLeftStickY()) > GamepadSettings.GP1_STICK_DEADZONE && !outtakeSlides.currentSpikeDetected()) {
                     outtakeSlides.setPower(-aimpad.getLeftStickY());
                 } else {
                     outtakeSlides.holdPosition();
@@ -108,6 +124,34 @@ public class OuttakeSystem extends Mechanism {
      */
     public void tallState() {
         outtakeSlides.setTargetPosition(TALL_POS);
+    }
+
+    /**
+     * Set the slides to the specimen low position
+     */
+    public void specimenLowState() {
+        outtakeSlides.setTargetPosition(SPECIMEN_LOW_POS);
+    }
+
+    /**
+     * Set the slides to the specimen high position
+     */
+    public void specimenHighState() {
+        outtakeSlides.setTargetPosition(SPECIMEN_HIGH_POS);
+    }
+
+    /**
+     * Set the slides to the specimen low drop position
+     */
+    public void specimenLowDropState() {
+        outtakeSlides.setTargetPosition(SPECIMEN_LOW_DROP_POS);
+    }
+
+    /**
+     * Set the slides to the specimen high drop position
+     */
+    public void specimenHighDropState() {
+        outtakeSlides.setTargetPosition(SPECIMEN_HIGH_DROP_POS);
     }
 
     @Override
