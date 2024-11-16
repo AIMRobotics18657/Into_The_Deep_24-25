@@ -16,6 +16,8 @@ import org.firstinspires.ftc.teamcode.subsystems.settings.ConfigurationInfo;
 import org.firstinspires.ftc.teamcode.subsystems.settings.GamepadSettings;
 import org.firstinspires.ftc.teamcode.util.InputModification;
 
+import java.util.Locale;
+
 public class Drivebase extends Mechanism {
 
     private DcMotorEx frontLeft;
@@ -31,8 +33,9 @@ public class Drivebase extends Mechanism {
     private GoBildaPinpointDriver odometryController;
 
     private Pose2D targetPose;
+    private Pose2D startingPose;
 
-    private enum DriveMode {
+    public enum DriveMode {
         MANUAL, TO_POSITION
     }
 
@@ -42,8 +45,12 @@ public class Drivebase extends Mechanism {
     PIDController lateralPID;
     PIDController turnPID;
 
-    private final static double XY_PROXIMITY_THRESHOLD = 5;
+    private final static double XY_PROXIMITY_THRESHOLD = 0.5;
     private final static double HEADING_PROXIMITY_THRESHOLD = 1;
+
+    public Drivebase(Pose2D startingPosition) {
+        startingPose = startingPosition;
+    }
 
     @Override
     public void init(HardwareMap hwMap) {
@@ -51,27 +58,32 @@ public class Drivebase extends Mechanism {
         backLeft = hwMap.get(DcMotorEx.class, ConfigurationInfo.leftBack.getDeviceName());
         frontRight = hwMap.get(DcMotorEx.class, ConfigurationInfo.rightFront.getDeviceName());
         backRight = hwMap.get(DcMotorEx.class, ConfigurationInfo.rightBack.getDeviceName());
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         odometryController = hwMap.get(GoBildaPinpointDriver.class, "ODO");
+        odometryController.setOffsets(-44.45, 38.1);
+        odometryController.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        odometryController.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        odometryController.resetPosAndIMU();
+        odometryController.setPosition(startingPose);
         targetPose = odometryController.getPosition();
 
-        double axialKP = 0;
+        double axialKP = 0.075;
         double axialKI = 0;
         double axialKD = 0;
         double axialDerivLowPass = 0;
         double axialIntMax = 0;
 
-        double lateralKP = 0;
+        double lateralKP = 0.075;
         double lateralKI = 0;
         double lateralKD = 0;
         double lateralDerivLowPass = 0;
         double lateralIntMax = 0;
 
-        double turnKP = 0;
+        double turnKP = 0.01; // 0.005
         double turnKI = 0;
         double turnKD = 0;
         double turnDerivLowPass = 0;
@@ -106,6 +118,7 @@ public class Drivebase extends Mechanism {
                 updateAutoNavigation();
                 break;
         }
+        odometryController.bulkUpdate();
     }
 
     public void setActiveDriveMode(DriveMode driveMode) {
@@ -121,10 +134,10 @@ public class Drivebase extends Mechanism {
 
     private void moveDrivebase(double y, double x, double rx) {
         double denominator = computeDenominator(y, x, rx);
-        frontLeftPower = (y + x + rx) / denominator;
-        backLeftPower = (y - x + rx) / denominator;
-        frontRightPower = (y - x - rx) / denominator;
-        backRightPower = (y + x - rx) / denominator;
+        backRightPower = (y + x + rx) / denominator;
+        frontRightPower = (y - x + rx) / denominator;
+        backLeftPower = (y - x - rx) / denominator;
+        frontLeftPower = (y + x - rx) / denominator;
 
         frontLeft.setPower(frontLeftPower);
         backLeft.setPower(backLeftPower);
@@ -146,7 +159,9 @@ public class Drivebase extends Mechanism {
 
     @Override
     public void telemetry(Telemetry telemetry) {
-
+        Pose2D pos = odometryController.getPosition();
+        String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.DEGREES));
+        telemetry.addData("Position", data);
     }
 
     public void systemsCheck(AIMPad gamepad, Telemetry telemetry) {
@@ -158,10 +173,10 @@ public class Drivebase extends Mechanism {
     }
 
     public void updateAutoNavigation() {
-        double yPower = axialPID.calculate(targetPose.getY(DistanceUnit.INCH), odometryController.getPosY());
-        double xPower = lateralPID.calculate(targetPose.getX(DistanceUnit.INCH), odometryController.getPosX());
-        double rxPower = turnPID.calculate(targetPose.getHeading(AngleUnit.DEGREES), odometryController.getHeading());
-        moveDrivebase(yPower, xPower, rxPower);
+        double axialPower = axialPID.calculate(targetPose.getX(DistanceUnit.INCH), odometryController.getPosition().getX(DistanceUnit.INCH));
+        double lateralPower = lateralPID.calculate(targetPose.getY(DistanceUnit.INCH), odometryController.getPosition().getY(DistanceUnit.INCH));
+        double turnPower = turnPID.calculate(targetPose.getHeading(AngleUnit.DEGREES), odometryController.getPosition().getHeading(AngleUnit.DEGREES));
+        moveDrivebase(axialPower, lateralPower, -turnPower);
     }
 
     public boolean isAtTargetPosition() {
@@ -170,13 +185,5 @@ public class Drivebase extends Mechanism {
         boolean isAtHeading = Math.abs(odometryController.getPosition().getHeading(AngleUnit.DEGREES) - targetPose.getHeading(AngleUnit.DEGREES)) < HEADING_PROXIMITY_THRESHOLD;
 
         return isAtY && isAtX && isAtHeading;
-    }
-
-    public void moveToPosition(Pose2D targetPose) {
-        setActiveDriveMode(DriveMode.TO_POSITION);
-        setTargetPose(targetPose);
-        while (!isAtTargetPosition()) {
-            updateAutoNavigation();
-        }
     }
 }

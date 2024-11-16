@@ -35,7 +35,7 @@ public class SlidesBase extends Mechanism {
     SimpleControlSystem controlSystem;
 
     public static final double PROXIMITY_THRESHOLD = 10;
-    private static final double BOUNDS_CURRENT_THRESHOLD = 5000;
+    private static final double CURRENT_THRESHOLD = 5000;
 
     /**
      * Constructor for the slides base
@@ -88,7 +88,7 @@ public class SlidesBase extends Mechanism {
      * Set the mode of the slides
      * @param mode the mode to set the slides to
      */
-    private void setMode(DcMotorEx.RunMode mode) {
+    public void setMode(DcMotorEx.RunMode mode) {
         leftSlide.setMode(mode);
         rightSlide.setMode(mode);
     }
@@ -190,7 +190,7 @@ public class SlidesBase extends Mechanism {
      * @return true if the slides are over the current threshold
      */
     public boolean currentSpikeDetected() {
-        return activeEncoderMotor.getCurrent(CurrentUnit.MILLIAMPS) > BOUNDS_CURRENT_THRESHOLD;
+        return activeEncoderMotor.getCurrent(CurrentUnit.MILLIAMPS) > CURRENT_THRESHOLD;
     }
 }
 

@@ -57,7 +57,7 @@ public class IntakeSystem extends Mechanism {
     }
     public AutoSlidesPosition activeAutoSlidesPosition = AutoSlidesPosition.RESET;
 
-    private enum SlidesControlState {
+    public enum SlidesControlState {
         AUTONOMOUS, MANUAL
     }
     private SlidesControlState activeControlState = SlidesControlState.AUTONOMOUS;
@@ -208,7 +208,7 @@ public class IntakeSystem extends Mechanism {
 
     @Override
     public void telemetry(Telemetry telemetry) {
-        telemetry.addData("Slides Position", intakeSlides.getCurrentPosition());
+        intake.telemetry(telemetry);
     }
 
     /**

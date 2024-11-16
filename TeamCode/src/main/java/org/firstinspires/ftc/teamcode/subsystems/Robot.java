@@ -5,6 +5,7 @@ import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.gb.pinpoint.driver.Pose2D;
 
 public class Robot extends Mechanism {
 
@@ -13,14 +14,16 @@ public class Robot extends Mechanism {
     public ScoringSystem scoringSystem;
 
     boolean isRed;
+    Pose2D startingPosition;
 
-    public Robot(boolean isRed) {
+    public Robot(boolean isRed, Pose2D startingPosition) {
         this.isRed = isRed;
+        this.startingPosition = startingPosition;
     }
 
     @Override
     public void init(HardwareMap hwMap) {
-        drivebase = new Drivebase();
+        drivebase = new Drivebase(startingPosition);
         hubs = new Hubs();
         scoringSystem = new ScoringSystem(isRed);
 
@@ -37,6 +40,6 @@ public class Robot extends Mechanism {
 
     @Override
     public void telemetry(Telemetry telemetry) {
-        scoringSystem.telemetry(telemetry);
+        drivebase.telemetry(telemetry);
     }
 }

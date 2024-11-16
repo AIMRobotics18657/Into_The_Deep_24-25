@@ -12,8 +12,8 @@ public class ConfigurationInfo {
     public static HardwareInterface rightHinge = new HardwareInterface("RH", false, 0);
 
     //INTAKE COLOR SENSORS
-    public static HardwareInterface bottomSensor = new HardwareInterface("BCS", false, 0);
-    public static HardwareInterface sideSensor = new HardwareInterface("SCS", false, 0);
+    public static HardwareInterface leftCS = new HardwareInterface("LCS", false, 0);
+    public static HardwareInterface rightCS = new HardwareInterface("RCS", false, 0);
 
     public static HardwareInterface specimenGrabber = new HardwareInterface("SG", false, 0);
 

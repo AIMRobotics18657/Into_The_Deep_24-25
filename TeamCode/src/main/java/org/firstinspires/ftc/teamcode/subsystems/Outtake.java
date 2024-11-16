@@ -16,19 +16,19 @@ public class Outtake extends Mechanism {
     Servo bucketHinge;
 //    Servo rightBucketHinge;
 
-    final double ARM_HINGE_IN_POSITION = 0.07; //arm hinges to intake position
+    final double ARM_HINGE_IN_POSITION = 0.14; //arm hinges to intake position
     final double ARM_HINGE_OUT_POSITION = .85; //arm hinges to outake position
-    final double BUCKET_HINGE_IN_POSITION = 0.44; //bucket hinges to intake position
+    final double BUCKET_HINGE_IN_POSITION = 0.37; //bucket hinges to intake position
     final double BUCKET_HINGE_OUT_POSITION = 1; //bucket hinges to outake position
 
-    enum ArmState {
+    public enum ArmState {
         ARMIN, ARMOUT, CUSTOM
     }
     ArmState activeArmState = ArmState.ARMIN;
     double armTargetPosition = ARM_HINGE_IN_POSITION;
 
 
-    enum BucketState {
+    public enum BucketState {
         BUCKETIN, BUCKETOUT, CUSTOM
     }
     BucketState activeBucketState = BucketState.BUCKETIN;
