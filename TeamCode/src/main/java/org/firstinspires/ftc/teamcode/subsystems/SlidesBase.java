@@ -34,7 +34,8 @@ public class SlidesBase extends Mechanism {
     LowPassFilter lowPassFilter;
     SimpleControlSystem controlSystem;
 
-    public static final double PROXIMITY_THRESHOLD = 10;
+    public static final double PROXIMITY_THRESHOLD = 30
+            ;
     private static final double CURRENT_THRESHOLD = 5000;
 
     /**

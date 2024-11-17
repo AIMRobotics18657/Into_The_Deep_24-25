@@ -45,8 +45,8 @@ public class Drivebase extends Mechanism {
     PIDController lateralPID;
     PIDController turnPID;
 
-    private final static double XY_PROXIMITY_THRESHOLD = 0.5;
-    private final static double HEADING_PROXIMITY_THRESHOLD = 1;
+    private final static double XY_PROXIMITY_THRESHOLD = 1;
+    private final static double HEADING_PROXIMITY_THRESHOLD = 8;
 
     public Drivebase(Pose2D startingPosition) {
         startingPose = startingPosition;
@@ -71,19 +71,25 @@ public class Drivebase extends Mechanism {
         odometryController.setPosition(startingPose);
         targetPose = odometryController.getPosition();
 
-        double axialKP = 0.075;
-        double axialKI = 0;
-        double axialKD = 0;
+        double axial_ku = 0.13;
+        double axial_tu = 1.4;
+
+        double lateral_ku = 0.13;
+        double lateral_tu = 1.4;
+
+        double axialKP = axial_ku * 0.6;
+        double axialKI = (1.2 * axial_ku)/ axial_tu;
+        double axialKD = 0.075 * axial_ku * axial_tu;
         double axialDerivLowPass = 0;
         double axialIntMax = 0;
 
-        double lateralKP = 0.075;
-        double lateralKI = 0;
-        double lateralKD = 0;
+        double lateralKP = lateral_ku * 0.6;
+        double lateralKI = (1.2 * lateral_ku)/ lateral_tu;
+        double lateralKD = 0.075 * lateral_ku * lateral_tu;
         double lateralDerivLowPass = 0;
         double lateralIntMax = 0;
 
-        double turnKP = 0.01; // 0.005
+        double turnKP = 0.008; // 0.005
         double turnKI = 0;
         double turnKD = 0;
         double turnDerivLowPass = 0;

@@ -22,7 +22,7 @@ public class SpecimenGrabber extends Mechanism {
 
     double targetGrabberPosition;
     private final static double GRAB_POSITION = 0.0;
-    private final static double RELEASE_POSITION =  0.17;
+    private final static double RELEASE_POSITION =  0.21;
 
     @Override
     public void init(HardwareMap hwMap) {

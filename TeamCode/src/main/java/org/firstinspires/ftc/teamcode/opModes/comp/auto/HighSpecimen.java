@@ -1,29 +1,24 @@
 package org.firstinspires.ftc.teamcode.opModes.comp.auto;
 
-import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
-import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.gb.pinpoint.driver.Pose2D;
 import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
-import org.firstinspires.ftc.teamcode.subsystems.Outtake;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSystem;
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.ScoringSystem;
+import org.firstinspires.ftc.teamcode.subsystems.SpecimenGrabber;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Autonomous(name = "HighSpecimen", group = "AAA_COMP")
 public final class HighSpecimen extends LinearOpMode {
     Robot robot = new Robot(true, AutoConstants.STARTING_POSITION);
-    ScoringSystem scoringSystem = new ScoringSystem(true);
 
     @Override
     public void runOpMode() {
@@ -34,32 +29,70 @@ public final class HighSpecimen extends LinearOpMode {
         AIMPad aimPad1 = new AIMPad(gamepad1);
         AIMPad aimPad2 = new AIMPad(gamepad2);
 
+        AtomicBoolean isFinished = new AtomicBoolean(true);
+
+        while (!isStarted() && !isStopRequested()) {
+            robot.telemetry(telemetry);
+            telemetry.update();
+        }
+
         while (opModeIsActive()) {
 
             //DRIVE TO DROP PIXEL
             Actions.runBlocking(
-                    new SequentialAction(
-                            new ParallelAction(
-                                    (telemetryPacket) -> { // Drive to High Drop
-                                        robot.drivebase.setTargetPose(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
-                                        robot.drivebase.loop(aimPad1, aimPad2);
-                                        return !robot.drivebase.isAtTargetPosition();
-                                    },
-                                    (telemetryPacket) -> { // Raise Lifts
-                                        scoringSystem.outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.SPECIMEN_HIGH);
-                                        return !scoringSystem.outtakeSystem.outtakeSlides.isAtTargetPosition();
-                                    }
-                            ),
-                            (telemetryPacket) -> { // Score Specimen
-                                scoringSystem.outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.SPECIMEN_HIGH_DROP);
-                                return !scoringSystem.outtakeSystem.outtakeSlides.isAtTargetPosition();
+                    new ParallelAction(
+                            (telemetryPacket) -> { // Drive to High Drop
+                                robot.loop(aimPad1, aimPad2);
+                                robot.telemetry(telemetry);
+                                telemetry.update();
+                                return isFinished.get();
                             },
-                            (telemetryPacket) -> { // Drive to Park
-                                robot.drivebase.setTargetPose(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
-                                robot.drivebase.loop(aimPad1, aimPad2);
-                                return !robot.drivebase.isAtTargetPosition();
-                            }
+                            new SequentialAction(
+                                    (telemetryPacket) -> { // Drive to High Drop Prep Spot
+                                        long startTime = System.currentTimeMillis();
+                                        long timeout = 4000; // Timeout in milliseconds
+                                        robot.scoringSystem.specimenGrabber.setGrabberState(SpecimenGrabber.GrabberState.GRAB);
+                                        robot.drivebase.setTargetPose(AutoConstants.HIGH_SPECIMEN_DROP_PREP);
+                                        return false;
+                                    },
+                                    new SleepAction(3),
+                                    (telemetryPacket) -> { // Raise Lifts
+                                        robot.scoringSystem.outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.SPECIMEN_HIGH);
+                                        return false;
+                                    },
+                                    new SleepAction(4),
+                                    (telemetryPacket) -> { // Drive to High Drop
+                                        long startTime = System.currentTimeMillis();
+                                        long timeout = 2000; // Timeout in milliseconds
+                                        robot.drivebase.setTargetPose(AutoConstants.HIGH_SPECIMEN_DROP);
+                                        return false;
+                                    },
+                                    new SleepAction(2),
+                                    (telemetryPacket) -> { // Score Specimen
+                                        robot.scoringSystem.outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.SPECIMEN_HIGH_DROP);
+                                        return false;
+                                    },
+                                    new SleepAction(1),
+                                    (telemetryPacket) -> { // Release
+                                        robot.scoringSystem.specimenGrabber.setGrabberState(SpecimenGrabber.GrabberState.RELEASE);
+                                        return false;
+                                    },
+                                    new SleepAction(1),
+                                    (telemetryPacket) -> { // Drive to Park
+                                        long startTime = System.currentTimeMillis();
+                                        long timeout = 6000; // Timeout in milliseconds
+                                        robot.drivebase.setTargetPose(AutoConstants.PARK);
+                                        robot.scoringSystem.outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.RESET);
+                                        return false;
+                                    },
+                                    new SleepAction(7),
+                                    (telemetryPacket) -> {;// Finish
+                                        isFinished.set(false);
+                                        return false;
+                                    }
+                            )
                     )
+
             );
             break;
         }

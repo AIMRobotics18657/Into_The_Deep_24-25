@@ -41,5 +41,6 @@ public class Robot extends Mechanism {
     @Override
     public void telemetry(Telemetry telemetry) {
         drivebase.telemetry(telemetry);
+//        scoringSystem.telemetry(telemetry);
     }
 }

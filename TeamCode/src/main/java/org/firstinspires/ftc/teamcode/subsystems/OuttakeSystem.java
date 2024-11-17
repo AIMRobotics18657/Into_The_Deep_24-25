@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.subsystems.settings.ConfigurationInfo;
 import org.firstinspires.ftc.teamcode.subsystems.settings.GamepadSettings;
 
 public class OuttakeSystem extends Mechanism {
-    public Outtake outtake;
+    Outtake outtake;
     public SlidesBase outtakeSlides;
 
     private static final DcMotorSimple.Direction leftMotorDirection = DcMotorSimple.Direction.FORWARD;

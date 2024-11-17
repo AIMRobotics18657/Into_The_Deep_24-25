@@ -50,7 +50,7 @@ public final class MovementPIDTest extends OpMode {
             robot.drivebase.setTargetPose(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
         } else if (aimPad1.isBPressed()) {
             robot.drivebase.setTargetPose(new Pose2D(DistanceUnit.INCH, 10, 0, AngleUnit.DEGREES, 0));
-        } else if (aimPad1.isYPressed()) {
+        } else if (aimPad1.isXPressed()) {
             robot.drivebase.setTargetPose(new Pose2D(DistanceUnit.INCH, 10, 10, AngleUnit.DEGREES, 0));
         } else if (aimPad1.isYPressed()) {
             robot.drivebase.setTargetPose(new Pose2D(DistanceUnit.INCH, 0, 10, AngleUnit.DEGREES, 0));
@@ -58,11 +58,11 @@ public final class MovementPIDTest extends OpMode {
         if (aimPad1.isDPadUpPressed()) {
             robot.drivebase.setTargetPose(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
         } else if (aimPad1.isDPadDownPressed()) {
-            robot.drivebase.setTargetPose(new Pose2D(DistanceUnit.INCH, 10, 0, AngleUnit.DEGREES, 90));
+            robot.drivebase.setTargetPose(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 90));
         } else if (aimPad1.isDPadLeftPressed()) {
-            robot.drivebase.setTargetPose(new Pose2D(DistanceUnit.INCH, 10, 10, AngleUnit.DEGREES, 180));
+            robot.drivebase.setTargetPose(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 180));
         } else if (aimPad1.isDPadRightPressed()) {
-            robot.drivebase.setTargetPose(new Pose2D(DistanceUnit.INCH, 0, 10, AngleUnit.DEGREES, 270));
+            robot.drivebase.setTargetPose(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 270));
         }
 
         telemetry.addData("Previous State", aimPad1.getPreviousState());

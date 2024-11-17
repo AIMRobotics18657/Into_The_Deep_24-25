@@ -62,6 +62,7 @@ public class IntakeSystem extends Mechanism {
     }
     private SlidesControlState activeControlState = SlidesControlState.AUTONOMOUS;
 
+    public double manualPower = 0;
 
     @Override
     public void init(HardwareMap hwMap) {
@@ -79,6 +80,8 @@ public class IntakeSystem extends Mechanism {
 
     @Override
     public void loop(AIMPad aimpad) {
+        pivotToPosition(pivotTargetPosition);
+        intake.loop(aimpad);
         switch (activeControlState){
             case AUTONOMOUS:
                 switch(activeAutoSlidesPosition) {
@@ -98,8 +101,8 @@ public class IntakeSystem extends Mechanism {
                 intakeSlides.update();
                 break;
             case MANUAL:
-                if (Math.abs(aimpad.getLeftStickY()) > GamepadSettings.GP1_STICK_DEADZONE && !intakeSlides.currentSpikeDetected()) {
-                    intakeSlides.setPower(-aimpad.getLeftStickY());
+                if (Math.abs(manualPower) > GamepadSettings.GP1_STICK_DEADZONE && !intakeSlides.currentSpikeDetected()) {
+                    intakeSlides.setPower(manualPower);
                 } else {
                     intakeSlides.holdPosition();
                 }
@@ -116,9 +119,10 @@ public class IntakeSystem extends Mechanism {
             case PIVOT_CUSTOM:
                 break;
         }
+    }
 
-        pivotToPosition(pivotTargetPosition);
-        intake.loop(aimpad);
+    public void setManualPower(double power) {
+        manualPower = power;
     }
   
     /**
