@@ -33,7 +33,7 @@ public class OuttakeSystem extends Mechanism {
     public static final double TALL_POS = 3100;
     public static final double SPECIMEN_LOW_POS = 650;
     public static final double SPECIMEN_LOW_DROP_POS = 350;
-    public static final double SPECIMEN_HIGH_POS = 1800;
+    public static final double SPECIMEN_HIGH_POS = 1850;
     public static final double SPECIMEN_HIGH_DROP_POS = 1350;
 
     public enum AutoSlidesPosition {

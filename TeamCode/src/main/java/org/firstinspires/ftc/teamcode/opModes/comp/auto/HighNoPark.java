@@ -16,8 +16,8 @@ import org.firstinspires.ftc.teamcode.subsystems.SpecimenGrabber;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@Autonomous(name = "HighSpecimen", group = "AAA_COMP")
-public final class HighSpecimen extends LinearOpMode {
+@Autonomous(name = "HighNoPark", group = "AAA_COMP")
+public final class HighNoPark extends LinearOpMode {
     Robot robot = new Robot(true, AutoConstants.STARTING_POSITION);
 
     @Override
@@ -41,6 +41,7 @@ public final class HighSpecimen extends LinearOpMode {
             //DRIVE TO DROP PIXEL
             Actions.runBlocking(
                     new ParallelAction(
+                            new SleepAction(7),
                             (telemetryPacket) -> { // Drive to High Drop
                                 robot.loop(aimPad1, aimPad2);
                                 robot.telemetry(telemetry);
@@ -81,11 +82,11 @@ public final class HighSpecimen extends LinearOpMode {
                                     (telemetryPacket) -> { // Drive to Park
                                         long startTime = System.currentTimeMillis();
                                         long timeout = 6000; // Timeout in milliseconds
-                                        robot.drivebase.setTargetPose(AutoConstants.PARK);
+                                        robot.drivebase.setTargetPose(AutoConstants.HIGH_SPECIMEN_DROP_PREP);
                                         robot.scoringSystem.outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.RESET);
                                         return false;
                                     },
-                                    new SleepAction(6),
+                                    new SleepAction(2),
                                     (telemetryPacket) -> {;// Finish
                                         isFinished.set(false);
                                         return false;

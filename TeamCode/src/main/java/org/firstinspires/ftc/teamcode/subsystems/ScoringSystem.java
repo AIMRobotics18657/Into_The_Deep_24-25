@@ -30,7 +30,7 @@ public class ScoringSystem extends Mechanism {
     }
 
     public enum ScoringState {
-        RESETTING, SEARCHING, TRANSITIONING1, TRANSITIONING2, SLIDES_POSITIONING, SPECIMEN_POSITIONING, SPECIMEN_SCORE, OUTTAKE_REZEROING, INTAKE_REZEROING, AUTO_PERIOD
+        RESETTING, SEARCHING, TRANSITIONING1, TRANSITIONING2, SLIDES_POSITIONING, SPECIMEN_POSITIONING, SPECIMEN_SCORE, OUTTAKE_REZEROING, INTAKE_REZEROING, AUTO_PERIOD, SPITTING
     }
 
     ScoringState activeScoringState = ScoringState.RESETTING;
@@ -78,6 +78,9 @@ public class ScoringSystem extends Mechanism {
             case AUTO_PERIOD:
                 autoPeriod();
                 break;
+            case SPITTING:
+                spitting(aimpad, aimpad2);
+                break;
         }
         intakeSystem.loop(aimpad);
         outtakeSystem.loop(aimpad, aimpad2);
@@ -108,7 +111,7 @@ public class ScoringSystem extends Mechanism {
     public void searchingState(AIMPad aimpad, AIMPad aimpad2) {
         specimenGrabber.setGrabberState(SpecimenGrabber.GrabberState.RELEASE);
 
-        if (aimpad.isAnyDPadPressed() || aimpad2.isAnyDPadPressed()) {
+        if (aimpad.isDPadUpPressed() || aimpad2.isAnyDPadPressed()) {
             outtakeRezeroingGoBackState = ScoringState.SEARCHING;
             setActiveScoringState(ScoringState.OUTTAKE_REZEROING);
         }
@@ -133,7 +136,12 @@ public class ScoringSystem extends Mechanism {
         } else if (aimpad2.getRightTrigger() > GamepadSettings.GP1_TRIGGER_DEADZONE) {
             intakeSystem.intake.bristlesAtPower(InputModification.poweredInput(aimpad2.getRightTrigger(), 3));
         } else {
-            intakeSystem.intake.bristlesIn();
+            intakeSystem.intake.bristlesAtPower(.3);
+        }
+
+
+        if (aimpad.isDPadDownPressed()) {
+            setActiveScoringState(ScoringState.SPITTING);
         }
 
         if (aimpad2.isYPressed()) {
@@ -154,9 +162,12 @@ public class ScoringSystem extends Mechanism {
     }
 
     public void transitioning1State(AIMPad aimpad, AIMPad aimpad2) {
-        if (aimpad.isAnyDPadPressed()) {
+        if (aimpad.isDPadUpPressed()) {
             outtakeRezeroingGoBackState = ScoringState.TRANSITIONING1;
             setActiveScoringState(ScoringState.OUTTAKE_REZEROING);
+        }
+        if (aimpad.isDPadDownPressed()) {
+            setActiveScoringState(ScoringState.SPITTING);
         }
 
         if (intakeSystem.intakeSlides.isAtTargetPosition()) {
@@ -169,12 +180,12 @@ public class ScoringSystem extends Mechanism {
     }
 
     public void transitioning2State(AIMPad aimpad, AIMPad aimpad2) {
-        if (aimpad.isAnyDPadPressed()) {
+        if (aimpad.isDPadUpPressed()) {
             outtakeRezeroingGoBackState = ScoringState.TRANSITIONING2;
             setActiveScoringState(ScoringState.OUTTAKE_REZEROING);
         }
 
-        intakeSystem.intake.bristlesIn();
+        intakeSystem.intake.bristlesAtPower(0.3);
         if (!(intakeSystem.intake.getBlockColor().equals("YELLOW")  || intakeSystem.intake.getBlockColor().equals(targetBlockColor))) {
             if (aimpad2.isXPressed() || aimpad.isAPressed()) {
                 outtakeSystem.outtake.setActiveArmState(Outtake.ArmState.ARMOUT);
@@ -187,6 +198,10 @@ public class ScoringSystem extends Mechanism {
     }
 
     public void slidesPositioningState(AIMPad aimpad, AIMPad aimpad2) {
+
+        if (aimpad2.isYPressed()) {
+            setActiveScoringState(ScoringState.TRANSITIONING2);
+        }
         if (aimpad2.getRightTrigger() > GamepadSettings.GP1_TRIGGER_DEADZONE || aimpad.getRightTrigger() > GamepadSettings.GP1_TRIGGER_DEADZONE) {
             outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.TALL);
         } else if (aimpad2.getLeftTrigger() > GamepadSettings.GP1_TRIGGER_DEADZONE || aimpad.getLeftTrigger() > GamepadSettings.GP1_TRIGGER_DEADZONE) {
@@ -209,6 +224,12 @@ public class ScoringSystem extends Mechanism {
         intakeSystem.setAutoSlidesPosition(IntakeSystem.AutoSlidesPosition.RESET);
         intakeSystem.intake.setActiveHingeState(Intake.HingeState.UP);
         intakeSystem.intake.bristlesOff();
+
+
+        if (aimpad.isDPadUpPressed()) {
+            outtakeRezeroingGoBackState = ScoringState.SPECIMEN_POSITIONING;
+            setActiveScoringState(ScoringState.OUTTAKE_REZEROING);
+        }
         if (aimpad2.isBPressed()) {
             setActiveScoringState(ScoringState.SEARCHING);
         }
@@ -229,6 +250,10 @@ public class ScoringSystem extends Mechanism {
     }
 
     public void specimenScoreState(AIMPad aimpad, AIMPad aimpad2) {
+        if (aimpad.isDPadUpPressed()) {
+            outtakeRezeroingGoBackState = ScoringState.SPECIMEN_SCORE;
+            setActiveScoringState(ScoringState.OUTTAKE_REZEROING);
+        }
         if (aimpad2.isLeftBumperPressed()) {
             outtakeSystem.setAutoSlidesPosition(OuttakeSystem.AutoSlidesPosition.SPECIMEN_LOW);
             setActiveScoringState(ScoringState.SPECIMEN_POSITIONING);
@@ -272,9 +297,16 @@ public class ScoringSystem extends Mechanism {
         outtakeSystem.outtake.setActiveBucketState(Outtake.BucketState.BUCKETIN);
     }
 
+    public void spitting(AIMPad aimPad, AIMPad aimPad2) {
+        intakeSystem.intake.setActiveHingeState(Intake.HingeState.NEUTRAL);
+        intakeSystem.intake.bristlesOut();
+        if (aimPad.isDPadDownPressed() || aimPad2.isAPressed()) {
+            setActiveScoringState(ScoringState.SEARCHING);
+        }
+    }
+
     @Override
     public void telemetry(Telemetry telemetry) {
-        intakeSystem.telemetry(telemetry);
         telemetry.addData("Automation State", activeScoringState);
     }
 }
