@@ -2,7 +2,7 @@ package com.example.meepmeep;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.TrajectoryBuilder; //DOES THIS WORK?
+import com.acmerobotics.roadrunner.TrajectoryBuilder;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
@@ -11,9 +11,6 @@ public class MeepMeepTesting {
 
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
-        double test = -35;
-        double test2 = -25.5;
-        double test3 = 180;
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
@@ -47,7 +44,8 @@ public class MeepMeepTesting {
 
                 // Left Block PUSH
                 .strafeTo(new Vector2d(10, -40))
-                .splineTo(new Vector2d(36, -12), Math.toRadians(180))
+//                .turn(Math.toRadians(90))
+                .splineTo(new Vector2d(41, -7), Math.toRadians(90))
                 .strafeTo(new Vector2d(48, -12))
                 .strafeTo(new Vector2d(48, -55))
 
