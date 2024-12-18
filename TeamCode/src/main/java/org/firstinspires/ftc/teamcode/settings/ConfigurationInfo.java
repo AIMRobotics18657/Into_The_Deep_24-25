@@ -4,6 +4,19 @@ import com.aimrobotics.aimlib.util.HardwareInterface;
 
 public class ConfigurationInfo {
 
+    //
+    // v2 CONFIGURATION INFORMATION
+    //
+
+    public static HardwareInterface hand = new HardwareInterface("HND", true, 0);
+
+
+
+    //
+    // v1 CONFIGURATION INFORMATION
+    //
+
+
     // INTAKE BRISTLES
     public static HardwareInterface bristles = new HardwareInterface("BRI", true, 0);
 
