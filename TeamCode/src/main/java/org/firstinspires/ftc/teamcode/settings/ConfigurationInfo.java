@@ -8,8 +8,11 @@ public class ConfigurationInfo {
     // v2 CONFIGURATION INFORMATION
     //
 
+    // HAND
     public static HardwareInterface hand = new HardwareInterface("HND", true, 0);
 
+    // ELBOW
+    public static HardwareInterface elbow = new HardwareInterface("EBW", true, 0);
 
 
     //
