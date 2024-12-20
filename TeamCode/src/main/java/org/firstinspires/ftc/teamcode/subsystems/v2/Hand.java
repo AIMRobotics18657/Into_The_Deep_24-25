@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.subsystems.v1.Outtake;
 
 public class Hand extends Mechanism {
     public Servo hand;
-//    Servo rightBucketHinge;
 
     private final double CLOSED_POSITION = 0.1; //arm hinges to intake position TODO find positions
     private final double OPEN_POSITION = .85; //arm hinges to outake position
@@ -19,7 +18,7 @@ public class Hand extends Mechanism {
 
     // declares possible arm states
     public enum HandState {
-        OPEN, CLOSED
+        OPEN, CLOSED, CUSTOM
     }
     private HandState activeHandState = HandState.CLOSED; // set initial active arm state to in
     private double targetPosition = CLOSED_POSITION;
@@ -46,6 +45,8 @@ public class Hand extends Mechanism {
             case CLOSED:
                 close();
                 break;
+            case CUSTOM:
+                break;
         }
         goToTargetPosition();
     }
@@ -63,6 +64,13 @@ public class Hand extends Mechanism {
 
     public void setActiveHandState(HandState activeHandState) {
         this.activeHandState = activeHandState;
+    }
+
+    public void setHandStateCustom(double targetPosition) {
+        if (!activeHandState.equals(HandState.CUSTOM)) {
+            setActiveHandState(HandState.CUSTOM);
+        }
+        this.targetPosition = targetPosition;
     }
 
     @Override
