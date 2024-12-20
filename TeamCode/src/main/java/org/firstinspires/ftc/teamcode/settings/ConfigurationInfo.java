@@ -9,8 +9,7 @@ public class ConfigurationInfo {
     //
 
     public static HardwareInterface hand = new HardwareInterface("HND", true, 0);
-    public static HardwareInterface rotator = new HardwareInterface("ROT", true, 0);
-    public static HardwareInterface flexor = new HardwareInterface("FLX", true, 0);
+
 
 
     //
