@@ -7,21 +7,20 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.settings.ConfigurationInfo;
-import org.firstinspires.ftc.teamcode.subsystems.v1.Outtake;
 
 
 public class Elbow extends Mechanism{
     Servo elbow;
 
-    final double ELBOW_IN_POSITION = 0; //elbow is parallel to the ground
+    final double IN_POSITION = 0; //elbow is parallel to the ground
 //    final double ELBOW_NEUTRAL_POSITION = 0.5; //elbow is perpendicular to the ground
-    final double ELBOW_OUT_POSITION = 1; //elbow goes to outtake position
+    final double OUT_POSITION = 1; //elbow goes to outtake position
 
     public enum ElbowState {
-        ELBOWIN, ELBOWOUT, CUSTOM
+        IN, OUT, CUSTOM
     }
-    Elbow.ElbowState activeElbowState = ElbowState.ELBOWIN; // sets initial active elbow state to intake position
-    double elbowTargetPosition = ELBOW_IN_POSITION;
+    Elbow.ElbowState activeElbowState = ElbowState.IN; // sets initial active elbow state to intake position
+    double targetPosition = IN_POSITION;
 
 
     public void init(HardwareMap hwMap) {
@@ -31,16 +30,16 @@ public class Elbow extends Mechanism{
 
     public void loop(AIMPad aimpad) {
         switch(activeElbowState) {
-            case ELBOWIN:
-                elbowIn();
+            case IN:
+                in();
                 break;
-            case ELBOWOUT:
-                elbowOut();
+            case OUT:
+                out();
                 break;
             case CUSTOM:
                 break;
         }
-        elbowToPosition(elbowTargetPosition);
+        goToTargetPosition(targetPosition);
     }
 
     public void setActiveElbowState(Elbow.ElbowState activeElbowState) {
@@ -48,32 +47,31 @@ public class Elbow extends Mechanism{
     }
 
     public void setElbowStateCustom(double elbowPosition) {
-        setActiveElbowState(Elbow.ElbowState.CUSTOM);
-        elbowTargetPosition = elbowPosition;
+        if (!activeElbowState.equals(ElbowState.CUSTOM)) {
+            setActiveElbowState(Elbow.ElbowState.CUSTOM);
+        }
+        targetPosition = elbowPosition;
     }
 
-    public void elbowIn() {
-        elbowTargetPosition = ELBOW_IN_POSITION;
+    public void in() {
+        targetPosition = IN_POSITION;
     }
 
-    public void elbowOut() {
-        elbowTargetPosition = ELBOW_OUT_POSITION;
+    public void out() {
+        targetPosition = OUT_POSITION;
     }
 
-    public void elbowToPosition(double elbowPosition) {
-        elbow.setPosition(elbowPosition);
+    public void goToTargetPosition(double position) {
+        elbow.setPosition(position);
     }
-
-
-    //DO I NEED TELEMTRY STUFF??
 
 
     public void systemsCheck(AIMPad aimpad, Telemetry telemetry) {
         loop(aimpad);
         if (aimpad.isAPressed()) {
-            setActiveElbowState(ElbowState.ELBOWIN);
+            setActiveElbowState(ElbowState.IN);
         } else if (aimpad.isBPressed()) {
-            setActiveElbowState(Elbow.ElbowState.ELBOWOUT);
+            setActiveElbowState(Elbow.ElbowState.OUT);
         } else if (aimpad.isRightStickMovementEngaged()) {
             setElbowStateCustom(aimpad.getRightStickX());
         }
