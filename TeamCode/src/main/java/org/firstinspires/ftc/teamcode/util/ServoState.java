@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.util;
 
 public class ServoState {
 
-    double position;
+    private double position;
 
     public ServoState(double position) {
         this.position = position;
@@ -10,5 +10,9 @@ public class ServoState {
 
     public double getPosition() {
         return position;
+    }
+
+    public void setPosition(double position) {
+        this.position = position;
     }
 }

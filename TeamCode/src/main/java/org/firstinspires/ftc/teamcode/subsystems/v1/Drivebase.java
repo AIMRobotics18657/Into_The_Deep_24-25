@@ -47,8 +47,8 @@ public class Drivebase extends Mechanism {
     }
 
     @Override
-    public void loop(AIMPad gamepad1) {
-        manualDrive(gamepad1, false);
+    public void loop(AIMPad aimpad) {
+        manualDrive(aimpad, false);
     }
 
     private void manualDrive(AIMPad gamepad, boolean isFieldCentric) {
