@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes.comp.auto.qualtwo;
+package org.firstinspires.ftc.teamcode.opModes.comp.auto.qual2;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 
@@ -13,7 +13,7 @@ public class Qual2AutoConstants {
 
     public static final double ROBOT_WIDTH = 18;
     public static final double ROBOT_LENGTH = 16;
-    public static final Pose2D RED_STARTING_POSITION = new Pose2D(DistanceUnit.INCH, -12, -62, AngleUnit.DEGREES, 0);
+    public static final Pose2d RED_STARTING_POSITION = new Pose2d(-12, -62,0);
     public static final Vector2d RED_PRELOAD_DROP = new Vector2d(-10, -33);
     public static final Pose2d RED_POST_DROP = new Pose2d(-10, -42, Math.toRadians(270));
     public static final double RED_POST_DROP_TANGENT = Math.toRadians(180);
@@ -57,7 +57,7 @@ public class Qual2AutoConstants {
 
     //VERY MUCH UNDER CONSTRUCTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //scoring the pre-load one
-    public static final Pose2D BLUE_STARTING_POSITION = new Pose2D(DistanceUnit.INCH, 12, 62, AngleUnit.DEGREES, 0);
+    public static final Pose2d BLUE_STARTING_POSITION = new Pose2d(12, 62, 0);
     public static final Vector2d BLUE_PRELOAD_DROP = new Vector2d(10, 33);
     public static final Pose2d BLUE_POST_DROP = new Pose2d(10, 42, Math.toRadians(90));
     public static final double BLUE_POST_DROP_TANGENT = Math.toRadians(180);
