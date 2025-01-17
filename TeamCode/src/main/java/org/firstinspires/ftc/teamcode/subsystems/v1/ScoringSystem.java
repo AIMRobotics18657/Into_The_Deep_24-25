@@ -71,23 +71,25 @@ public class ScoringSystem extends Mechanism {
         this.activeScoringState = activeScoringState;
     }
 
-    public void resettingState() {
+    public void resetMechs() {
         intakeSystem.multiAxisArm.resetClosed();
 
         intakeSystem.pivotDown();
 
-        outtakeSystem.outtake.armIn();
-        outtakeSystem.outtake.bucketIn();
+        intakeSystem.setSlidesPosition(IntakeSystem.SlidesPosition.RESET);
 
         specimenGrabber.setGrabberState(SpecimenGrabber.GrabberState.RELEASE);
+        outtakeSystem.reset();
+    }
 
-        intakeSystem.setSlidesPosition(IntakeSystem.SlidesPosition.RESET);
-        outtakeSystem.setSlidesPosition(OuttakeSystem.SlidesPosition.RESET);
+    public void resettingState() {
+        resetMechs();
         if (intakeSystem.intakeSlides.isAtTargetPosition() && outtakeSystem.outtakeSlides.isAtTargetPosition()){
             intakeSystem.multiAxisArm.searchingNeutral();
             setActiveScoringState(ScoringState.SEARCHING);
         }
     }
+
     public void searchingState(AIMPad aimpad, AIMPad aimpad2) {
         specimenGrabber.setGrabberState(SpecimenGrabber.GrabberState.RELEASE);
 
