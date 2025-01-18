@@ -30,7 +30,7 @@ public class OuttakeSystem extends Mechanism {
 
     public static final double RESET_POS = 0;
     public static final double SHORT_POS = 1500;
-    public static final double TALL_POS = 3100;
+    public static final double TALL_POS = 3200;
     public static final double SPECIMEN_LOW_POS = 650;
     public static final double SPECIMEN_LOW_DROP_POS = 350;
     public static final double SPECIMEN_HIGH_POS = 1850;
