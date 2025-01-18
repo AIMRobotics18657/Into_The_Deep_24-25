@@ -10,11 +10,11 @@ import org.firstinspires.ftc.teamcode.settings.ConfigurationInfo;
 import org.firstinspires.ftc.teamcode.subsystems.generic.SlidesBase;
 
 public class OuttakeSystem extends Mechanism {
-    Outtake outtake;
-    SlidesBase outtakeSlides;
+    public Outtake outtake;
+    public SlidesBase outtakeSlides;
 
-    private static final DcMotorSimple.Direction leftMotorDirection = DcMotorSimple.Direction.FORWARD;
-    private static final DcMotorSimple.Direction rightMotorDirection = DcMotorSimple.Direction.REVERSE;
+    private static final DcMotorSimple.Direction leftMotorDirection = DcMotorSimple.Direction.REVERSE;
+    private static final DcMotorSimple.Direction rightMotorDirection = DcMotorSimple.Direction.FORWARD;
 
     private static final double kP = 0.006;
     private static final double kI = 0.00001;
@@ -84,52 +84,58 @@ public class OuttakeSystem extends Mechanism {
         this.activeSlidesPosition = activeSlidesPosition;
     }
 
+    public void reset() {
+        setSlidesPosition(SlidesPosition.RESET);
+        outtake.armIn();
+        outtake.bucketIn();
+    }
+
     /**
      * Set the slides to the reset position
      */
-    public void resetState() {
+    private void resetState() {
         outtakeSlides.setTargetPosition(RESET_POS);
     }
 
     /**
      * Set the slides to the short position
      */
-    public void shortState() {
+    private void shortState() {
         outtakeSlides.setTargetPosition(SHORT_POS);
     }
 
     /**
      * Set the slides to the tall position
      */
-    public void tallState() {
+    private void tallState() {
         outtakeSlides.setTargetPosition(TALL_POS);
     }
 
     /**
      * Set the slides to the specimen low position
      */
-    public void specimenLowState() {
+    private void specimenLowState() {
         outtakeSlides.setTargetPosition(SPECIMEN_LOW_POS);
     }
 
     /**
      * Set the slides to the specimen high position
      */
-    public void specimenHighState() {
+    private void specimenHighState() {
         outtakeSlides.setTargetPosition(SPECIMEN_HIGH_POS);
     }
 
     /**
      * Set the slides to the specimen low drop position
      */
-    public void specimenLowDropState() {
+    private void specimenLowDropState() {
         outtakeSlides.setTargetPosition(SPECIMEN_LOW_DROP_POS);
     }
 
     /**
      * Set the slides to the specimen high drop position
      */
-    public void specimenHighDropState() {
+    private void specimenHighDropState() {
         outtakeSlides.setTargetPosition(SPECIMEN_HIGH_DROP_POS);
     }
 
@@ -138,7 +144,7 @@ public class OuttakeSystem extends Mechanism {
         telemetry.addData("Slides Position", outtakeSlides.getCurrentPosition());
     }
 
-    public void systemsCheck(AIMPad aimpad, Telemetry telemetry) {
+    public void systemsCheck(AIMPad aimpad, AIMPad aimpad2, Telemetry telemetry) {
         if (aimpad.isDPadDownPressed()) {
             setSlidesPosition(SlidesPosition.RESET);
         } else if (aimpad.isDPadLeftPressed()) {
@@ -149,7 +155,7 @@ public class OuttakeSystem extends Mechanism {
             outtakeSlides.setActiveControlState(SlidesBase.SlidesControlState.MANUAL);
         }
         outtakeSlides.updateManualPower(aimpad.getLeftStickY());
-        loop(aimpad);
+        loop(aimpad, aimpad2);
         telemetry(telemetry);
     }
 

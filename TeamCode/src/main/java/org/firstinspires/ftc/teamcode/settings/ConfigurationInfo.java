@@ -8,10 +8,15 @@ public class ConfigurationInfo {
     // v2 CONFIGURATION INFORMATION
     //
 
+    // SERVOS
     public static HardwareInterface hand = new HardwareInterface("HND", true, 0);
     public static HardwareInterface elbow = new HardwareInterface("ELB", true, 0);
     public static HardwareInterface rotator = new HardwareInterface("ROT", true, 0);
     public static HardwareInterface flexor = new HardwareInterface("FLX", true, 0);
+
+    public static HardwareInterface leftSlide = new HardwareInterface("LS", true, 0);
+    public static HardwareInterface rightSlide = new HardwareInterface("RS", true, 0);
+    public static HardwareInterface pivot = new HardwareInterface("PVT", true, 0);
 
 
 
@@ -49,9 +54,8 @@ public class ConfigurationInfo {
     public static HardwareInterface leftArmHinge = new HardwareInterface("LOAH", true, 0);
     public static HardwareInterface rightArmHinge = new HardwareInterface("ROAH", true, 0);
 
-    // OUTAKE BUCKET HINGES
-    public static HardwareInterface leftBucketHinge = new HardwareInterface("BH", false, 0);
-//    public static HardwareInterface rightBucketHinge = new HardwareInterface("ORBH", false, 0);
+    // OUTAKE BUCKET HINGE
+    public static HardwareInterface bucketHinge = new HardwareInterface("BH", false, 0);
 
     // DRIVEBASE
     public static HardwareInterface leftFront = new HardwareInterface("FLD", true, 1);

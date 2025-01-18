@@ -18,8 +18,6 @@ public class Robot extends Mechanism {
     boolean isRed;
     Pose2d startingPosition;
 
-    double oldTime = 0;
-
     public Robot(boolean isRed, Pose2d startingPosition) {
         this.isRed = isRed;
         this.startingPosition = startingPosition;
@@ -29,7 +27,7 @@ public class Robot extends Mechanism {
     public void init(HardwareMap hwMap) {
         drivebase = new Drivebase();
         hubs = new Hubs();
-        scoringSystem = new ScoringSystem(isRed);
+        scoringSystem = new ScoringSystem();
 
         drivebase.init(hwMap);
         hubs.init(hwMap);
