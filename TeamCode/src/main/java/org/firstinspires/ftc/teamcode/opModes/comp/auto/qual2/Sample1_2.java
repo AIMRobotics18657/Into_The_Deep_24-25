@@ -22,12 +22,6 @@ public final class Sample1_2 extends LinearOpMode {
     AIMPad aimPad1;
     AIMPad aimPad2;
 
-    boolean hasSpecimenDropped = true;
-    boolean isAtSampleIntake = true;
-    boolean isIntakeReset = true;
-    boolean isAtSampleOuttake = true;
-    boolean isOuttakeReset = true;
-    boolean hasSampleDropped = true;
     boolean isAutoComplete = true;
 
     @Override
@@ -187,6 +181,10 @@ public final class Sample1_2 extends LinearOpMode {
                                     (telemetryPacket) -> { // retract lifts
                                         robot.scoringSystem.resetMechs();
                                         return robot.scoringSystem.intakeSystem.intakeSlides.isAtTargetPosition() && robot.scoringSystem.outtakeSystem.outtakeSlides.isAtTargetPosition();
+                                    },
+                                    (telemetryPacket) -> { // end auto
+                                        isAutoComplete = true;
+                                        return false;
                                     }
                             )
                     )
