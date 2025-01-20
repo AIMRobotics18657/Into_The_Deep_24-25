@@ -4,15 +4,11 @@ import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.settings.ConfigurationInfo;
 import org.firstinspires.ftc.teamcode.subsystems.generic.SlidesBase;
-import org.firstinspires.ftc.teamcode.subsystems.multiaxisarm.Elbow;
-import org.firstinspires.ftc.teamcode.subsystems.multiaxisarm.Hand;
-import org.firstinspires.ftc.teamcode.subsystems.multiaxisarm.MultiAxisArm;
-import org.firstinspires.ftc.teamcode.subsystems.multiaxisarm.Wrist;
+import org.firstinspires.ftc.teamcode.subsystems.v2.multiaxisarm.MultiAxisArm;
 import org.firstinspires.ftc.teamcode.util.ServoState;
 import org.firstinspires.ftc.teamcode.util.StateDrivenServo;
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.multiaxisarm;
+package org.firstinspires.ftc.teamcode.subsystems.v2.multiaxisarm;
 
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;

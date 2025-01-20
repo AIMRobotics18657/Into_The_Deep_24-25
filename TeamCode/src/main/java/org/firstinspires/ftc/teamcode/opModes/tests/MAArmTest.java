@@ -4,7 +4,7 @@ import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.subsystems.multiaxisarm.MultiAxisArm;
+import org.firstinspires.ftc.teamcode.subsystems.v2.multiaxisarm.MultiAxisArm;
 
 @TeleOp(name="ArmTest", group="AAA_COMPETITION")
 public class MAArmTest extends OpMode {
