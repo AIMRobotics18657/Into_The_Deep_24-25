@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.v2.multiaxisarm;
+package org.firstinspires.ftc.teamcode.subsystems.multiaxisarm;
 
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
@@ -110,5 +110,12 @@ public class MultiAxisArm extends Mechanism {
         wrist.flexDown();
         wrist.rotateCenter();
         elbow.down();
+    }
+
+    public void custom(double handPosition, double wristFlexPosition, double wristRotatePosition, double elbowPosition) {
+        hand.custom(handPosition);
+        wrist.flexCustom(wristFlexPosition);
+        wrist.rotateCustom(wristRotatePosition);
+        elbow.custom(elbowPosition);
     }
 }
