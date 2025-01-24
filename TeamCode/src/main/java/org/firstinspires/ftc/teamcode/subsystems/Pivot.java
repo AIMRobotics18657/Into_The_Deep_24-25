@@ -17,18 +17,19 @@ public class Pivot extends Mechanism {
     private DcMotorEx pivot;
 
     private final SimpleControlSystem controlSystem;
-
+  
     public enum PivotControlState {
         AUTONOMOUS, MANUAL
     }
 
     private PivotControlState activeControlState = PivotControlState.AUTONOMOUS;
+  
+    private SlidesBase.SlidesControlState activeControlState = SlidesBase.SlidesControlState.AUTONOMOUS;
+  
     private double lastPosition;
     private double activeTargetPosition = 0;
     private static final double MINIMUM_POWER = 0.03;
     private double manualPower = 0;
-
-
     //todo: set pid values
 
     private static final double kP = 0.006;
@@ -92,7 +93,7 @@ public class Pivot extends Mechanism {
     private void updateLastPosition() {
         lastPosition = pivot.getCurrentPosition();
     }
-
+      
     private void setPower(double power) {
         pivot.setPower(power);
         updateLastPosition();
@@ -101,7 +102,7 @@ public class Pivot extends Mechanism {
     private double getTargetOutputPower() {
         return controlSystem.update(pivot.getCurrentPosition());
     }
-
+      
     private void update() {
         double power = getTargetOutputPower();
         setPower(power);
@@ -112,6 +113,11 @@ public class Pivot extends Mechanism {
         controlSystem.setTarget(activeTargetPosition);
     }
 
+    private void setTargetPosition(double targetPosition) {
+        activeTargetPosition = targetPosition;
+        controlSystem.setTarget(activeTargetPosition);
+    }
+      
     private void holdPosition() {
         setTargetPosition(lastPosition);
         update();
@@ -129,7 +135,7 @@ public class Pivot extends Mechanism {
         manualPower = power;
     }
 
-    public void setActiveControlState(PivotControlState activeControlState) {
+    private void setActiveControlState(PivotControlState activeControlState) {
         this.activeControlState = activeControlState;
     }
 
@@ -142,5 +148,4 @@ public class Pivot extends Mechanism {
         setActiveControlState(PivotControlState.MANUAL);
         updateManualPower(power);
     }
-
 }
