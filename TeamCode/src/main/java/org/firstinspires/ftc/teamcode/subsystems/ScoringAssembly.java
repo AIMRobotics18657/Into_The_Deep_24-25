@@ -26,5 +26,4 @@ public class ScoringAssembly extends Mechanism {
         slides.loop(aimpad);
         multiAxisArm.loop(aimpad);
     }
-
 }
