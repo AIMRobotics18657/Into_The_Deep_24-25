@@ -28,10 +28,22 @@ public class MultiAxisArm extends Mechanism {
         elbow.loop(aimpad);
     }
 
+    public void toggleSpecimen() {
+        wrist.toggleSpecimen();
+        elbow.toggleSpecimen();
+    }
+
     public void resetOpen() {
         hand.open();
-        wrist.flexUp();
-        wrist.rotateLeft();
+        wrist.flexNeutral();
+        wrist.rotateCenter();
+        elbow.middle();
+    }
+
+    public void specimenPickup() {
+        hand.open();
+        wrist.flexNeutral();
+        wrist.rotateCenter();
         elbow.forward();
     }
 
@@ -72,9 +84,9 @@ public class MultiAxisArm extends Mechanism {
 
     public void upClosed() {
         hand.close();
-        wrist.flexUp();
+        wrist.flexScore();
         wrist.rotateCenter();
-        elbow.middle();
+        elbow.score();
     }
 
     public void searchingDownOpen() {
