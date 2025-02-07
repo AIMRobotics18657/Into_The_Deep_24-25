@@ -37,24 +37,27 @@ public class Specimen1_2 extends LinearOpMode {
                 .splineToLinearHeading(SupersAutoConstants.PUSH_THREE_A, SupersAutoConstants.PUSH_THREE_A_TANGENT)
                 .strafeTo(SupersAutoConstants.PUSH_THREE_B.position)
                 .build();
-//
-//            Action hangOne = robot.drivebase.drive.actionBuilder()
-//                .strafeTo(SupersAutoConstants.RED_ONE_HANG)
-//                .waitSeconds(1)
-//                .strafeTo(SupersAutoConstants.RED_ONE_RESET)
-//                .build();
-//
-//            Action hangTwo = robot.drivebase.drive.actionBuilder()
-//                .strafeTo(SupersAutoConstants.RED_TWO_HANG)
-//                .waitSeconds(1)
-//                .strafeTo(SupersAutoConstants.RED_TWO_RESET)
-//                .build();
-//
-//            Action hangThree = robot.drivebase.drive.actionBuilder()
-//                .strafeTo(SupersAutoConstants.RED_THREE_HANG)
-//                .waitSeconds(1)
-//                .strafeTo(SupersAutoConstants.RED_THREE_RESET)
-//                .build();
+
+            Action hangOne = robot.drivebase.drive.actionBuilder(SupersAutoConstants.PUSH_THREE_B)
+                .strafeTo(SupersAutoConstants.HANG_ONE_A.position)
+                .waitSeconds(1)
+                .strafeTo(SupersAutoConstants.HANG_ONE_B.position)
+                .waitSeconds(2)
+                .build();
+
+            Action hangTwo = robot.drivebase.drive.actionBuilder(SupersAutoConstants.HANG_ONE_B)
+                .strafeTo(SupersAutoConstants.HANG_TWO_A.position)
+                .waitSeconds(1)
+                .strafeTo(SupersAutoConstants.HANG_TWO_B.position)
+                .waitSeconds(2)
+                .build();
+
+            Action hangThree = robot.drivebase.drive.actionBuilder(SupersAutoConstants.HANG_TWO_B)
+                .strafeTo(SupersAutoConstants.HANG_THREE_A.position)
+                .waitSeconds(1)
+                .strafeTo(SupersAutoConstants.HANG_THREE_B.position)
+                .waitSeconds(2)
+                .build();
 
         waitForStart();
         while (opModeIsActive()){
@@ -64,10 +67,10 @@ public class Specimen1_2 extends LinearOpMode {
                         new SleepAction(1),
                         pushBlockOne,
                         pushBlockTwo,
-                        pushBlockThree
-//                        hangOne,
-//                        hangTwo,
-//                        hangThree
+                        pushBlockThree,
+                        hangOne,
+                        hangTwo,
+                        hangThree
                     )
             );
             break;

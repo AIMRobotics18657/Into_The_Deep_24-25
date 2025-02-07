@@ -29,8 +29,21 @@ public class SupersAutoConstants {
     public static final double PUSH_TWO_B_TANGENT = Math.toRadians(270);
 
     //PUSH 3
-    public static final Pose2d PUSH_THREE_A = new Pose2d(-62.25, 10, Math.toRadians(270));
+    public static final Pose2d PUSH_THREE_A = new Pose2d(-62.25, 13, Math.toRadians(270));
     public static final Pose2d PUSH_THREE_B = new Pose2d(-62.3, 50, Math.toRadians(270));
     public static final double PUSH_THREE_A_TANGENT = Math.toRadians(-1000000000);
+
+    //HANG 1
+    public static final Pose2d HANG_ONE_A = new Pose2d(-42, 60, Math.toRadians(270));
+    public static final Pose2d HANG_ONE_B = new Pose2d(-8, 34.5, Math.toRadians(270));
+
+    //HANG 2
+    public static final Pose2d HANG_TWO_A = new Pose2d(-42, 60, Math.toRadians(270));
+    public static final Pose2d HANG_TWO_B = new Pose2d(-5, 34.5, Math.toRadians(270));
+
+    //HANG 3
+    public static final Pose2d HANG_THREE_A = new Pose2d(-42, 60, Math.toRadians(270));
+    public static final Pose2d HANG_THREE_B = new Pose2d(-2, 34.5, Math.toRadians(270));
+
 
 }
