@@ -47,8 +47,19 @@ public class ScoringAssembly extends Mechanism {
         slides.setSlidesPosition(Slides.SlidesExtension.RESET);
     }
 
+    public void resetAuto() {
+        multiAxisArm.neutral();
+        pivot.setPivotPosition(Pivot.PivotAngle.START_MORE);
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET_MORE);
+    }
+
     public void setPickupResetNeutral() {
         multiAxisArm.neutral();
+        pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET);
+    }
+    public void setPickupResetNeutralClosed() {
+        multiAxisArm.neutralClosed();
         pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
         slides.setSlidesPosition(Slides.SlidesExtension.RESET);
     }
@@ -71,6 +82,12 @@ public class ScoringAssembly extends Mechanism {
         slides.setSlidesPosition(Slides.SlidesExtension.HIGH_SPECIMEN);
     }
 
+    public void setSpecimenClampedAUTO() {
+        multiAxisArm.upClosed();
+        pivot.setPivotPosition(Pivot.PivotAngle.SPECIMEN_PICKUP);
+        slides.setSlidesPosition(Slides.SlidesExtension.HIGH_SPECIMEN_AUTO);
+    }
+
     public void setScoringLowBucketClamped() {
         multiAxisArm.neutralClosed();
         pivot.setPivotPosition(Pivot.PivotAngle.SCORE);
@@ -78,13 +95,13 @@ public class ScoringAssembly extends Mechanism {
     }
 
     public void setLowHangRetracted() {
-        multiAxisArm.resetAvoid();
+        multiAxisArm.hang();
         pivot.setPivotPosition(Pivot.PivotAngle.START);
-        slides.setSlidesPosition(Slides.SlidesExtension.RESET);
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET_MORE);
     }
 
     public void setLowHangExtended() {
-        multiAxisArm.resetAvoidNeutral();
+        multiAxisArm.hang();
         pivot.setPivotPosition(Pivot.PivotAngle.START);
         slides.setSlidesPosition(Slides.SlidesExtension.LOW_HANG);
     }
@@ -94,6 +111,12 @@ public class ScoringAssembly extends Mechanism {
     }
 
     public boolean areMotorsAtTargetPresets() {
-        return  pivot.isAtTargetPreset() && slides.isAtTargetPreset();
+        return pivot.isAtTargetPreset() && slides.isAtTargetPreset();
+    }
+
+    public void totalFix() {
+        multiAxisArm.neutral();
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET_MORE);
+        pivot.setPivotPosition(Pivot.PivotAngle.START_MORE);
     }
 }

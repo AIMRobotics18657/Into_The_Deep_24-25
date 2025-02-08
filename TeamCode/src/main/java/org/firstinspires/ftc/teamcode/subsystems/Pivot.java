@@ -35,6 +35,7 @@ public class Pivot extends Mechanism {
     }
 
     public enum PivotAngle {
+        START_MORE(STARTING_DEGREES - 360),
         START(STARTING_DEGREES),
         SCORE(83),
         SPECIMEN_PICKUP(78),

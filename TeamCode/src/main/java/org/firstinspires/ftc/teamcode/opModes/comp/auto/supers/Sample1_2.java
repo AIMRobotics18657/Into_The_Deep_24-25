@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Robot_V2;
 
 @Autonomous(name = "Sample1_2", group = "AAA_COMP", preselectTeleOp="RedTeleOp")
 public class Sample1_2 extends LinearOpMode {
-    Robot_V2 robot = new Robot_V2(SupersAutoConstantsSample.STARTING_POSITION);
+    Robot_V2 robot = new Robot_V2(SupersAutoConstantsSample.STARTING_POSITION, true);
 
     @Override
     public void runOpMode() {

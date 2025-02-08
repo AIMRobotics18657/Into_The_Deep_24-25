@@ -6,7 +6,7 @@ public class InputHandler {
     public boolean ADVANCE_AUTOMATION = false;
     public boolean SPECIMEN_ADVANCE = false;
     public boolean SAMPLE_ADVANCE = false;
-    public boolean LOW_HANG = false;
+    public boolean TOGGLE_LOW_HANG = false;
     public boolean EXTEND_SLIDES = false;
     public boolean RETRACT_SLIDES = false;
     public boolean LOW_HEIGHT = false;
@@ -21,14 +21,16 @@ public class InputHandler {
     public boolean FLEX_NEUTRAL = false;
     public boolean TOGGLE_HAND_ARM = false;
     public double SLIDES_CONTROL = 0;
+    public boolean MANUAL_OVERRIDE = false;
+    public boolean BACK_TO_SEARCH = false;
 
     public void updateInputs(AIMPad aimpad, AIMPad aimpad2) {
         ADVANCE_AUTOMATION = aimpad2.isDPadUpPressed();
         SPECIMEN_ADVANCE = aimpad2.isDPadDownPressed();
         SAMPLE_ADVANCE = aimpad2.isDPadUpPressed();
-        LOW_HANG = aimpad2.isDPadLeftHeld() && aimpad2.isAHeld();
-        EXTEND_SLIDES = aimpad2.isDPadRightReleased();
-        RETRACT_SLIDES = aimpad2.isDPadLeftReleased();
+        TOGGLE_LOW_HANG = aimpad2.isDPadRightHeld() && aimpad2.isXPressed();
+        EXTEND_SLIDES = aimpad2.isRightTriggerPressed();
+        RETRACT_SLIDES = aimpad2.isLeftTriggerPressed();
         LOW_HEIGHT = aimpad2.isLeftBumperReleased();
         HIGH_HEIGHT = aimpad2.isRightBumperReleased();
         RELEASE_ELEMENT = aimpad2.isRightTriggerReleased();
@@ -39,5 +41,7 @@ public class InputHandler {
         FLEX_NEUTRAL = aimpad2.isYPressed();
         TOGGLE_HAND_ARM = aimpad2.isRightTriggerPressed();
         SLIDES_CONTROL = -aimpad2.getLeftStickY();
+        MANUAL_OVERRIDE = aimpad.isDPadLeftHeld() && aimpad2.isDPadLeftHeld();
+        BACK_TO_SEARCH = aimpad2.isBPressed();
     }
 }

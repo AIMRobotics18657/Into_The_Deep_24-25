@@ -47,27 +47,6 @@ public class MultiAxisArm extends Mechanism {
         elbow.forward();
     }
 
-    public void resetClosed() {
-        hand.close();
-        wrist.flexUp();
-        wrist.rotateLeft();
-        elbow.forward();
-    }
-
-    public void resetAvoid() {
-        hand.close();
-        wrist.flexNeutral();
-        wrist.rotateCenter();
-        elbow.backward();
-    }
-
-    public void resetAvoidNeutral() {
-        hand.open();
-        wrist.flexNeutral();
-        wrist.rotateCenter();
-        elbow.middle();
-    }
-
     public void neutral() {
         hand.open();
         wrist.flexNeutral();
@@ -89,46 +68,11 @@ public class MultiAxisArm extends Mechanism {
         elbow.score();
     }
 
-    public void searchingDownOpen() {
-        hand.open();
-        wrist.flexDown();
+    public void hang() {
+        hand.close();
+        wrist.flexNeutral();
         wrist.rotateCenter();
-        elbow.backward();
-    }
-
-    public void searchingDownLeftTiltOpen() {
-        hand.open();
-        wrist.flexDown();
-        wrist.rotateLeft();
-        elbow.backward();
-    }
-
-    public void searchingDownRightTiltOpen() {
-        hand.open();
-        wrist.flexDown();
-        wrist.rotateRight();
-        elbow.backward();
-    }
-
-    public void searchingDownLeftTiltClosed() {
-        hand.close();
-        wrist.flexDown();
-        wrist.rotateLeft();
-        elbow.backward();
-    }
-
-    public void searchingDownRightTiltClosed() {
-        hand.close();
-        wrist.flexDown();
-        wrist.rotateRight();
-        elbow.backward();
-    }
-
-    public void searchingDownClosed() {
-        hand.close();
-        wrist.flexDown();
-        wrist.rotateCenter();
-        elbow.backward();
+        elbow.hang();
     }
 
     public void custom(double handPosition, double wristFlexPosition, double wristRotatePosition, double elbowPosition) {

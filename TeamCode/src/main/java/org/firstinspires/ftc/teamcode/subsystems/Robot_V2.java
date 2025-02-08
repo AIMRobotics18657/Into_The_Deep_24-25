@@ -10,9 +10,11 @@ import org.firstinspires.ftc.teamcode.settings.InputHandler;
 
 public class Robot_V2 extends Mechanism {
 
+    boolean isAuto;
+
     public Drivebase drivebase;
 //    Hubs hubs = new Hubs(); // TODO implement hubs
-    ScoringAssembly scoringAssembly = new ScoringAssembly();
+    public ScoringAssembly scoringAssembly = new ScoringAssembly();
 //    Vision vision = new Vision();
 
     InputHandler inputHandler = new InputHandler();
@@ -25,7 +27,8 @@ public class Robot_V2 extends Mechanism {
         PREP_SCORING,
         SCORING,
         DROP_SLIDES,
-        LOW_HANG
+        LOW_HANG,
+        TOTAL_FIX
     }
 
     enum ScoringElement {
@@ -39,8 +42,9 @@ public class Robot_V2 extends Mechanism {
 
     Pose2d startingPose;
 
-    public Robot_V2(Pose2d startingPose) {
+    public Robot_V2(Pose2d startingPose, boolean isAuto) {
         this.startingPose = startingPose;
+        this.isAuto = isAuto;
         drivebase = new Drivebase(startingPose);
     }
 
@@ -55,35 +59,42 @@ public class Robot_V2 extends Mechanism {
     @Override
     public void loop(AIMPad aimpad, AIMPad aimpad2) {
 //        hubs.loop(aimpad);
-        drivebase.loop(aimpad);
         scoringAssembly.loop(aimpad, aimpad2);
-        inputHandler.updateInputs(aimpad, aimpad2);
+        if (!isAuto) {
+            inputHandler.updateInputs(aimpad, aimpad2);
+            drivebase.loop(aimpad);
+            switch (activeState) {
+                case RESETTING:
+                    resettingState();
+                    break;
+                case SEARCHING:
+                    searchingState();
+                    break;
+                case AUTO_GRASPING:
+                    autoGraspingState();
+                    break;
+                case RETRACTING:
+                    retracting();
+                    break;
+                case PREP_SCORING:
+                    prepScoringState();
+                    break;
+                case SCORING:
+                    scoringState();
+                    break;
+                case DROP_SLIDES:
+                    dropSlides();
+                    break;
+                case LOW_HANG:
+                    lowHang();
+                    break;
+                case TOTAL_FIX:
+                    totalFix();
+            }
+        }
 
-        switch(activeState) {
-            case RESETTING:
-                resettingState();
-                break;
-            case SEARCHING:
-                searchingState();
-                break;
-            case AUTO_GRASPING:
-                autoGraspingState();
-                break;
-            case RETRACTING:
-                retracting();
-                break;
-            case PREP_SCORING:
-                prepScoringState();
-                break;
-            case SCORING:
-                scoringState();
-                break;
-            case DROP_SLIDES:
-                dropSlides();
-                break;
-            case LOW_HANG:
-                lowHang();
-                break;
+        if (inputHandler.MANUAL_OVERRIDE) {
+            activeState = RobotState.TOTAL_FIX;
         }
     }
 
@@ -154,7 +165,7 @@ public class Robot_V2 extends Mechanism {
             scoringAssembly.multiAxisArm.hand.toggle();
         }
 
-        if (inputHandler.LOW_HANG) {
+        if (inputHandler.TOGGLE_LOW_HANG) {
             scoringAssembly.setLowHangRetracted();
             activeState = RobotState.LOW_HANG;
         }
@@ -182,6 +193,10 @@ public class Robot_V2 extends Mechanism {
         }
         if (scoringAssembly.areMotorsAtTargetPresets()) {
             activeState = RobotState.SCORING;
+        }
+        if (inputHandler.BACK_TO_SEARCH) {
+            scoringAssembly.setPickupResetNeutralClosed();
+            activeState = RobotState.SEARCHING;
         }
     }
 
@@ -221,6 +236,12 @@ public class Robot_V2 extends Mechanism {
             scoringAssembly.setLowHangExtended();
         } else if (inputHandler.RETRACT_SLIDES) {
             scoringAssembly.setLowHangRetracted();
+        } else if (inputHandler.TOGGLE_LOW_HANG) {
+            activeState = RobotState.RESETTING;
         }
+    }
+
+    private void totalFix() {
+        scoringAssembly.totalFix();
     }
 }

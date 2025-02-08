@@ -26,10 +26,12 @@ public class Slides extends Mechanism {
     }
 
     public enum SlidesExtension {
+        RESET_MORE(-50),
         RESET(0),
         HIGH_SPECIMEN(5),
+        HIGH_SPECIMEN_AUTO(7),
         LOW_BUCKET(14),
-        LOW_HANG(24),
+        LOW_HANG(13),
         HIGH_BUCKET(28);
 
         public final double extension;
@@ -86,6 +88,7 @@ public class Slides extends Mechanism {
     private static final double CURRENT_THRESHOLD = 5000;     // In milliamps
     private static final double MINIMUM_POWER = 0.03;           // Minimum manual power to move slides
     private static final double TICKS_PER_INCH = 113.91949;     // Encoder ticks per inch of slide travel
+    private static final double EXTEND_MAX = 17;
 
     // ===============================================================
     // Additional fields for high-level control (preset positions, pivot)
@@ -285,7 +288,11 @@ public class Slides extends Mechanism {
      */
     private void applyManualPower() {
         if (Math.abs(manualPower) > MINIMUM_POWER && !currentSpikeDetected()) {
-            setPower(manualPower);
+             if (getCurrentExtension() > EXTEND_MAX) {
+                 setPower(-1);
+             } else  {
+                 setPower(manualPower);
+             }
         } else {
             holdPosition();
         }
