@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.subsystems.multiaxisarm;
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class MultiAxisArm extends Mechanism {
 
@@ -81,18 +80,18 @@ public class MultiAxisArm extends Mechanism {
         elbow.score();
     }
 
+    public void specimenInPosition() {
+        hand.close();
+        wrist.flexPrepSpecimen();
+        wrist.rotateFullFlip();
+        elbow.prepSpecimen();
+    }
+
     public void hang() {
         hand.close();
         wrist.flexNeutral();
         wrist.rotateInLine();
         elbow.hang();
-    }
-
-    public void scoreNew() {
-        hand.close();
-        wrist.flexScoreNew();
-        wrist.rotateInLine();
-        elbow.score();
     }
 
     public void custom(double handPosition, double wristFlexPosition, double wristRotatePosition, double elbowPosition) {

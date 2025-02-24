@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.aimrobotics.aimlib.util.Mechanism;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -28,16 +27,15 @@ public class ScoringAssembly extends Mechanism {
 
     public void loop(AIMPad aimpad, AIMPad aimpad2) {
         slides.loop(aimpad, aimpad2);
-        if (!disableArm) {
-            multiAxisArm.loop(aimpad, aimpad2);
-            pivot.loop(aimpad, aimpad2);
-        }
+        multiAxisArm.loop(aimpad, aimpad2);
+        pivot.loop(aimpad, aimpad2);
     }
 
     @Override
     public void telemetry(Telemetry telemetry) {
         pivot.telemetry(telemetry);
         slides.telemetry(telemetry);
+        multiAxisArm.telemetry(telemetry);
     }
 
     public void reset() {
@@ -69,32 +67,36 @@ public class ScoringAssembly extends Mechanism {
         pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
         slides.setSlidesPosition(Slides.SlidesExtension.RESET);
     }
-    public void setPickupResetNeutralClosed() {
-        multiAxisArm.neutralClosed();
-        pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
-        slides.setSlidesPosition(Slides.SlidesExtension.RESET);
-    }
-
-    public void setPickupResetClamped() {
-        multiAxisArm.neutralClosed();
-        pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
-        slides.setSlidesPosition(Slides.SlidesExtension.RESET);
-    }
-
     public void setScoringResetClamped() {
         multiAxisArm.upClosed();
         pivot.setPivotPosition(Pivot.PivotAngle.NEW_SCORE);
         slides.setSlidesPosition(Slides.SlidesExtension.RESET);
     }
 
-    public void setSpecimenClamped() {
-        multiAxisArm.upClosed();
-        pivot.setPivotPosition(Pivot.PivotAngle.SCORE);
+    public void setSpecimenInPosition() {
+        multiAxisArm.specimenInPosition();
+        pivot.setPivotPosition(Pivot.PivotAngle.SCORE_SPECIMEN);
         slides.setSlidesPosition(Slides.SlidesExtension.HIGH_SPECIMEN);
     }
 
+    public void setSpecimenScore() {
+        multiAxisArm.specimenInPosition();
+        pivot.setPivotPosition(Pivot.PivotAngle.SCORE_SPECIMEN);
+        slides.setSlidesPosition(Slides.SlidesExtension.HIGH_SPECIMEN_SCORE);
+    }
+
+    public void toggleSpecimen() {
+        multiAxisArm.toggleSpecimen();
+        pivot.setPivotPosition(Pivot.PivotAngle.SCORE_SPECIMEN);
+        if (slides.activeSlidesTarget == Slides.SlidesExtension.HIGH_SPECIMEN) {
+            slides.setSlidesPosition(Slides.SlidesExtension.HIGH_SPECIMEN_SCORE);
+        } else {
+            slides.setSlidesPosition(Slides.SlidesExtension.HIGH_SPECIMEN);
+        }
+    }
+
     public void setSpecimenClampedAUTO() {
-        multiAxisArm.upClosed();
+        multiAxisArm.specimenInPosition();
         pivot.setPivotPosition(Pivot.PivotAngle.SPECIMEN_PICKUP);
         slides.setSlidesPosition(Slides.SlidesExtension.HIGH_SPECIMEN_AUTO);
     }
@@ -111,55 +113,32 @@ public class ScoringAssembly extends Mechanism {
 
     public void setHangStart() {
         multiAxisArm.hang();
-        pivot.setPivotPosition(Pivot.PivotAngle.START);
+        pivot.setPivotPosition(Pivot.PivotAngle.HANG);
         slides.setSlidesPosition(Slides.SlidesExtension.RESET);
     }
 
     public void setLowHangExtended() {
         multiAxisArm.hang();
-        pivot.setPivotPosition(Pivot.PivotAngle.START);
+        pivot.setPivotPosition(Pivot.PivotAngle.HANG);
         slides.setSlidesPosition(Slides.SlidesExtension.LOW_HANG);
     }
 
-    public void setLowHangRetracted() {
-        disableArm = true;
-        multiAxisArm.hang();
-        pivot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        pivot.setPivotAtPower(0);
-//        pivot.setPivotPosition(Pivot.PivotAngle.START);
-        slides.setSlidesPosition(Slides.SlidesExtension.RESET);
-    }
-
     public void setLowHangClip() {
-        disableArm = true;
         multiAxisArm.hang();
-        pivot.setPivotPosition(Pivot.PivotAngle.CLIP_ON);
-        slides.setSlidesPosition(Slides.SlidesExtension.RESET);
+        pivot.setPivotPosition(Pivot.PivotAngle.HANG);
+        slides.setSlidesPosition(Slides.SlidesExtension.LOW_HANG_CLIP);
     }
 
-    public void setHighHangOff() {
+    public void setLowHangRetracted() {
         multiAxisArm.hang();
-        pivot.setPivotPosition(Pivot.PivotAngle.HANG_OFF);
-        slides.setSlidesPosition(Slides.SlidesExtension.HIGH_HANG);
-    }
-
-    public void setHighHangOn() {
-        multiAxisArm.hang();
-        pivot.setPivotPosition(Pivot.PivotAngle.NEW_SCORE);
-        slides.setSlidesPosition(Slides.SlidesExtension.HIGH_HANG);
-    }
-
-    public void setHighHangRetracted() {
-        multiAxisArm.hang();
-        pivot.setPivotAtPower(0);
-//        pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
-        slides.setSlidesPosition(Slides.SlidesExtension.RESET);
+        pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET_MORE);
     }
 
     public void setHighHangFinal() {
         multiAxisArm.hang();
         pivot.setPivotPosition(Pivot.PivotAngle.NEW_SCORE);
-        slides.setSlidesPosition(Slides.SlidesExtension.RESET);
+        slides.setSlidesPosition(Slides.SlidesExtension.RESET_MORE);
     }
 
     public boolean areMotorsAtTarget() {
