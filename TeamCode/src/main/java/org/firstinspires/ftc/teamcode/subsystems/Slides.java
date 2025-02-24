@@ -26,14 +26,14 @@ public class Slides extends Mechanism {
     }
 
     public enum SlidesExtension {
-        RESET_MORE(-50),
+        RESET_MORE(-500000),
         RESET(0),
-        HIGH_SPECIMEN(5.75),
+        HIGH_SPECIMEN(7.25),
+        HIGH_SPECIMEN_SCORE(7.25),
         HIGH_SPECIMEN_AUTO(7),
         LOW_BUCKET(14),
-        LOW_HANG(19),
-        HIGH_HANG(23),
-        NEXT_HANG(6),
+        LOW_HANG_CLIP(12),
+        LOW_HANG(16),
         HIGH_BUCKET(28.5);
 
         public final double extension;
@@ -66,13 +66,13 @@ public class Slides extends Mechanism {
     private PIDFController controller;
 
     // PID and feedforward constants (set to your desired values)
-    private static final double kP = 0.5;
+    private static final double kP = 0.7;
     private static final double kI = 0.03;
-    private static final double kD = 0;
-    private static final double INTEGRAL_SUM_MAX = 10;
-    private static final double kV = 0;
-    private static final double kA = 0;
-    private static final double kStatic = 0;
+    private static final double kD = 0.01;
+    private static final double INTEGRAL_SUM_MAX = 15;
+    private static final double kV = 0.01;
+    private static final double kA = 0.01;
+    private static final double kStatic = 0.0002;
     private static final double kCos = 0;
     private static final double kG = 0;
 
@@ -86,10 +86,12 @@ public class Slides extends Mechanism {
     // ===============================================================
     // Constants for motion and safety
     // ===============================================================
-    private static final double PROXIMITY_THRESHOLD = .75;   // Inches tolerance for target extension
+    private static final double PROXIMITY_THRESHOLD = .5;   // Inches tolerance for target extension
     private static final double CURRENT_THRESHOLD = 5000;     // In milliamps
     private static final double MINIMUM_POWER = 0.03;           // Minimum manual power to move slides
-    private static final double TICKS_PER_INCH = 113.91949;     // Encoder ticks per inch of slide travel
+    private static final double PULLEY_CIRCUMFERENCE = 4.724757455393701;    // Circumference of the slide pulley (in inches)
+    private static final double PPR = 384.5;                      // Pulses per revolution of the encoder
+    private static final double TICKS_PER_INCH = PPR / PULLEY_CIRCUMFERENCE;     // Encoder ticks per inch of slide travel
     private static final double EXTEND_MAX = 17;
 
     // ===============================================================
@@ -118,7 +120,7 @@ public class Slides extends Mechanism {
         leftSlide.setDirection(leftMotorDirection);
         rightSlide.setDirection(rightMotorDirection);
 
-        // Use one motor as the primary encoder source (.                                                                        can be adjusted as needed)
+        // Use one motor as the primary encoder source (can be adjusted as needed)
         activeEncoderMotor = rightSlide;
         lastActiveEncoderExtension = 0;
 
@@ -150,7 +152,9 @@ public class Slides extends Mechanism {
         telemetry.addData("Current Extension (in):", getCurrentExtension());
         telemetry.addData("Target Extension (in):", activeTargetExtension);
         telemetry.addData("Control Mode:", activeControlState);
-        telemetry.addData("MILLIAMPS", activeEncoderMotor.getCurrent(CurrentUnit.MILLIAMPS));
+        telemetry.addData("Output Power:", getTargetOutputPower());
+        telemetry.addData("Left milli", leftSlide.getCurrent(CurrentUnit.MILLIAMPS));
+        telemetry.addData("Right milli", rightSlide.getCurrent(CurrentUnit.MILLIAMPS));
     }
 
     // ===============================================================

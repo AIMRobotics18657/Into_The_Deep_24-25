@@ -14,21 +14,20 @@ public class Wrist extends Mechanism {
     public StateDrivenServo rotator;
     public StateDrivenServo flexor;
 
-    ServoState FLX_UP = new ServoState(.48);
-    ServoState FLX_SCORE_SPECIMEN = new ServoState(.73);
+    ServoState FLX_NEUTRAL = new ServoState(.8);
     ServoState FLX_SCORE = new ServoState(0.61);
-    ServoState FLEX_SCORE_NEW = new ServoState(.44);
-    ServoState FLX_NEUTRAL = new ServoState(.74);
+    ServoState FLX_SCORE_SPECIMEN = new ServoState(.71);
+    ServoState FLX_PREP_SPECIMEN = new ServoState(.86);
     ServoState FLX_DOWN = new ServoState(.97);
 
     ServoState ROT_IN_LINE = new ServoState(1);
     ServoState ROT_HORIZONTAL = new ServoState(.5);
-    ServoState ROT_FULL_FLIP = new ServoState(.85);
+    ServoState ROT_FULL_FLIP = new ServoState(0);
 
 
     @Override
     public void init(HardwareMap hwMap) {
-        flexor = new StateDrivenServo(new ServoState[]{FLX_UP, FLX_NEUTRAL, FLX_SCORE, FLX_SCORE_SPECIMEN,  FLX_DOWN}, FLX_NEUTRAL, ConfigurationInfo.flexor.getDeviceName());
+        flexor = new StateDrivenServo(new ServoState[]{FLX_NEUTRAL, FLX_SCORE, FLX_SCORE_SPECIMEN, FLX_PREP_SPECIMEN, FLX_DOWN}, FLX_NEUTRAL, ConfigurationInfo.flexor.getDeviceName());
         rotator = new StateDrivenServo(new ServoState[]{ROT_IN_LINE, ROT_HORIZONTAL, ROT_FULL_FLIP}, ROT_HORIZONTAL, ConfigurationInfo.rotator.getDeviceName());
         flexor.init(hwMap);
         rotator.init(hwMap);
@@ -46,10 +45,6 @@ public class Wrist extends Mechanism {
         rotator.telemetry(telemetry);
     }
 
-    public void flexUp() {
-        flexor.setActiveTargetState(FLX_UP);
-    }
-
     public void flexNeutral() {
         flexor.setActiveTargetState(FLX_NEUTRAL);
     }
@@ -62,23 +57,15 @@ public class Wrist extends Mechanism {
         flexor.setActiveTargetState(FLX_SCORE_SPECIMEN);
     }
 
-    public void flexScoreNew() {
-        flexor.setActiveTargetState(FLEX_SCORE_NEW);
+    public void flexPrepSpecimen() {
+        flexor.setActiveTargetState(FLX_PREP_SPECIMEN);
     }
 
     public void toggleSpecimen() {
-        if (flexor.getActiveTargetState() == FLX_SCORE_SPECIMEN) {
-            flexScore();
-        } else {
+        if (flexor.getActiveTargetState() == FLX_PREP_SPECIMEN) {
             flexScoreSpecimen();
-        }
-    }
-
-    public void toggleSample() {
-        if (flexor.getActiveTargetState() == FLX_NEUTRAL) {
-            flexDown();
         } else {
-            flexNeutral();
+            flexPrepSpecimen();
         }
     }
 

@@ -21,7 +21,7 @@ public class Hand extends Mechanism {
     public HandState activeHandState = HandState.OPEN;
 
     ServoState CLOSED = new ServoState(0.38);
-    ServoState OPEN = new ServoState(.82);
+    ServoState OPEN = new ServoState(.89);
 
     @Override
     public void init(HardwareMap hwMap) {

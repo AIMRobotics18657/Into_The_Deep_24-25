@@ -16,12 +16,12 @@ public class Robot_V2 extends Mechanism {
     boolean isAuto;
     int isRed;
     boolean canFlipBack = false;
-    boolean disableDB = false;
 
     final double RELEASE_MS = 200;
 
     public Drivebase drivebase;
     public ScoringAssembly scoringAssembly = new ScoringAssembly();
+//    public Hubs hubs = new Hubs();
 
     InputHandler inputHandler = new InputHandler();
 
@@ -40,11 +40,8 @@ public class Robot_V2 extends Mechanism {
     enum HangState {
         START,
         LOW_EXTEND,
-        LOW_RETRACT,
         LOW_CLIP,
-        HIGH_EXTEND_OFF,
-        HIGH_EXTEND_ON,
-        HIGH_RETRACT,
+        LOW_RETRACT,
         FINAL
     }
 
@@ -54,7 +51,7 @@ public class Robot_V2 extends Mechanism {
         DUMPING
     }
 
-    ScoringMethod activeScoringMethodType = ScoringMethod.DUMPING;
+    ScoringMethod activeScoringMethodType = ScoringMethod.SPECIMEN;
 
     RobotState activeState = RobotState.RESETTING;
 
@@ -73,6 +70,7 @@ public class Robot_V2 extends Mechanism {
     public void init(HardwareMap hwMap) {
         drivebase.init(hwMap);
         scoringAssembly.init(hwMap);
+//        hubs.init(hwMap);
     }
 
     @Override
@@ -80,9 +78,7 @@ public class Robot_V2 extends Mechanism {
         scoringAssembly.loop(aimpad, aimpad2);
         if (!isAuto) {
             inputHandler.updateInputs(aimpad, aimpad2);
-            if (!disableDB) {
-                drivebase.loop(aimpad);
-            }
+            drivebase.loop(aimpad);
             switch (activeState) {
                 case RESETTING:
                     resettingState();
@@ -115,6 +111,7 @@ public class Robot_V2 extends Mechanism {
     @Override
     public void telemetry(Telemetry telemetry) {
         scoringAssembly.telemetry(telemetry);
+//        hubs.telemetry(telemetry);
         telemetry.addData("Current State:", activeState);
         telemetry.addData("Current Element:", activeScoringMethodType);
     }
@@ -122,12 +119,12 @@ public class Robot_V2 extends Mechanism {
     private void resettingState() {
         switch (activeScoringMethodType) {
             case SAMPLE:
+            case DUMPING:
                 scoringAssembly.setPickupReset();
                 break;
             case SPECIMEN:
                 scoringAssembly.reset();
-            case DUMPING:
-                scoringAssembly.setPickupReset();
+                break;
         }
         if (scoringAssembly.areMotorsAtTargetPresets()) {
             if (activeScoringMethodType == ScoringMethod.SPECIMEN) {
@@ -208,7 +205,7 @@ public class Robot_V2 extends Mechanism {
     private void prepScoringState() {
         switch (activeScoringMethodType) {
             case SPECIMEN:
-                scoringAssembly.setSpecimenClamped();
+                scoringAssembly.setSpecimenInPosition();
                 break;
             case SAMPLE:
                 scoringAssembly.setScoringResetClamped();
@@ -220,6 +217,9 @@ public class Robot_V2 extends Mechanism {
         }
 
         if (scoringAssembly.areMotorsAtTargetPresets()) {
+//            if (activeScoringMethodType == ScoringMethod.SAMPLE) {
+//                scoringAssembly.slides.setSlidesPosition(Slides.SlidesExtension.HIGH_BUCKET);
+//            }
             activeState = RobotState.SCORING;
         }
 
@@ -233,12 +233,12 @@ public class Robot_V2 extends Mechanism {
         switch (activeScoringMethodType) {
             case SPECIMEN:
                 if (inputHandler.TOGGLE_HAND_ARM) {
-                    scoringAssembly.multiAxisArm.toggleSpecimen();
+                    scoringAssembly.toggleSpecimen();
                 }
 
-                if (inputHandler.ADVANCE_AUTOMATION) { // TODO: AND IS AT THE PULLED ON POINT
-                    scoringAssembly.reset();
-                    activeState = RobotState.DROP_SLIDES;
+                if (inputHandler.ADVANCE_AUTOMATION) {
+                    activeScoringMethodType = ScoringMethod.SPECIMEN;
+                    activeState = RobotState.RESETTING;
                 }
                 break;
             case SAMPLE:
@@ -256,14 +256,17 @@ public class Robot_V2 extends Mechanism {
 
                 if (automationTimer.milliseconds() > RELEASE_MS && canFlipBack) {
                     scoringAssembly.multiAxisArm.wrist.flexNeutral();
-                    canFlipBack = false;
-                }
-
-
-                if (inputHandler.ADVANCE_AUTOMATION && scoringAssembly.multiAxisArm.hand.activeHandState == Hand.HandState.OPEN && !canFlipBack) {
                     scoringAssembly.resetAvoid();
+                    canFlipBack = false;
                     activeState = RobotState.DROP_SLIDES;
+//                    scoringAssembly.pivot.setPivotPosition(Pivot.PivotAngle.HIGH_BUCKET_RESET);
                 }
+
+
+//                if (scoringAssembly.areMotorsAtTargetPresets() && scoringAssembly.multiAxisArm.hand.activeHandState == Hand.HandState.OPEN && !canFlipBack) {
+//                    scoringAssembly.resetAvoid();
+//                    activeState = RobotState.DROP_SLIDES;
+//                }
                 break;
             case DUMPING:
                 if (inputHandler.SET_SAMPLE) {
@@ -285,7 +288,6 @@ public class Robot_V2 extends Mechanism {
     }
 
     private void hanging() {
-        disableDB = true;
         switch (hangState) {
             case START:
                 scoringAssembly.setHangStart();
@@ -296,55 +298,31 @@ public class Robot_V2 extends Mechanism {
             case LOW_EXTEND:
                 scoringAssembly.setLowHangExtended();
                 if (inputHandler.ADVANCE_HANG) {
-                    hangState = HangState.LOW_RETRACT;
-                } else if (inputHandler.BACKWARD_HANG) {
-                    hangState = HangState.START;
-                }
-                break;
-            case LOW_RETRACT:
-                scoringAssembly.setLowHangRetracted();
-                if (inputHandler.ADVANCE_HANG) {
                     hangState = HangState.LOW_CLIP;
                 } else if (inputHandler.BACKWARD_HANG) {
-                    hangState = HangState.LOW_EXTEND;
+                    hangState = HangState.START;
                 }
                 break;
             case LOW_CLIP:
                 scoringAssembly.setLowHangClip();
                 if (inputHandler.ADVANCE_HANG) {
-                    hangState = HangState.HIGH_EXTEND_OFF;
-                } else if (inputHandler.BACKWARD_HANG) {
                     hangState = HangState.LOW_RETRACT;
-                }
-                break;
-            case HIGH_EXTEND_OFF:
-                scoringAssembly.setHighHangOff();
-                if (inputHandler.ADVANCE_HANG) {
-                    hangState = HangState.HIGH_EXTEND_ON;
                 } else if (inputHandler.BACKWARD_HANG) {
-                    hangState = HangState.LOW_CLIP;
+                    hangState = HangState.LOW_EXTEND;
                 }
                 break;
-            case HIGH_EXTEND_ON:
-                scoringAssembly.setHighHangOn();
-                if (inputHandler.ADVANCE_HANG) {
-                    hangState = HangState.HIGH_RETRACT;
-                } else if (inputHandler.BACKWARD_HANG) {
-                    hangState = HangState.LOW_CLIP;
-                }
-                break;
-            case HIGH_RETRACT:
-                scoringAssembly.setHighHangRetracted();
+            case LOW_RETRACT:
+                scoringAssembly.setLowHangRetracted();
                 if (inputHandler.ADVANCE_HANG) {
                     hangState = HangState.FINAL;
                 } else if (inputHandler.BACKWARD_HANG) {
-                    hangState = HangState.HIGH_EXTEND_ON;
+                    hangState = HangState.LOW_CLIP;
                 }
                 break;
             case FINAL:
                 scoringAssembly.setHighHangFinal();
                 if (inputHandler.BACKWARD_HANG) {
-                    hangState = HangState.HIGH_RETRACT;
+                    hangState = HangState.LOW_RETRACT;
                 }
                 break;
         }

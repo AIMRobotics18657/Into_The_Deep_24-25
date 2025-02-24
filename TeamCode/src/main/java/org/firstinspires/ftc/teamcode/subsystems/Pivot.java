@@ -20,7 +20,7 @@ public class Pivot extends Mechanism {
     private static final double MINIMUM_POWER = 0.03;       // Minimum power before holding position
     private static final double TICKS_PER_DEGREE = 15.4788888; // Encoder ticks per degree
     private static final int STARTING_DEGREES = 67; // Default starting angle
-    private static final int MOVEMENT_PREVENTION_MILLIAMPS = 6000; // Prevents movement if current exceeds this value TODO FIND THIS THING PLEASE
+    private static final int MOVEMENT_PREVENTION_MILLIAMPS = 7500; // Prevents movement if current exceeds this value TODO FIND THIS THING PLEASE
     private static final int HIGH_PIDF_SWAP = 16;
 
     private DcMotorEx pivotMotor;
@@ -41,12 +41,12 @@ public class Pivot extends Mechanism {
     public enum PivotAngle {
         START_MORE(STARTING_DEGREES - 20),
         START(STARTING_DEGREES),
-        NEW_SCORE(89),
+        HANG(73),
+        NEW_SCORE(85),
         SCORE(83),
-        SPECIMEN_PICKUP(78),
-        HIGH_BUCKET_RESET(92),
-        CLIP_ON(130),
-        HANG_OFF(110),
+        SCORE_SPECIMEN(79),
+        SPECIMEN_PICKUP(67),
+        HIGH_BUCKET_RESET(97),
         PICKUP(173);
 
         public final int angle;
@@ -62,7 +62,7 @@ public class Pivot extends Mechanism {
     // ===============================================================
     // PIDF Constants
     // ===============================================================
-    private static final double kP = 0.115;
+    private static final double kP = 0.105;
     private static final double kI = 0.005;
     private static final double kD = 0.01;
     private static final double INTEGRAL_SUM_MAX = 50;

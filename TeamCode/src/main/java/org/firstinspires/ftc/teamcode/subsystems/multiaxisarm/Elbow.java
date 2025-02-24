@@ -14,18 +14,19 @@ public class Elbow extends Mechanism {
     public StateDrivenServo leftElbow;
     public StateDrivenServo rightElbow;
 
-    ServoState DOWN = new ServoState(.92);
+    ServoState DOWN = new ServoState(.87);
     ServoState HANG = new ServoState(.7);
     ServoState IN_LINE = new ServoState(.33);
     ServoState PICKUP_PLUS = new ServoState(.38);
     ServoState SCORE = new ServoState(.32);
-    ServoState SCORE_SPECIMEN = new ServoState(.495);
+    ServoState PREP_SPECIMEN = new ServoState(0.09);
+    ServoState SCORE_SPECIMEN = new ServoState(0.02);
     ServoState UP = new ServoState(0);
 
     @Override
     public void init(HardwareMap hwMap) {
-        leftElbow = new StateDrivenServo(new ServoState[]{DOWN, HANG, UP, SCORE, PICKUP_PLUS, SCORE_SPECIMEN, IN_LINE}, UP, ConfigurationInfo.leftElbow.getDeviceName());
-        rightElbow = new StateDrivenServo(new ServoState[]{DOWN, HANG, UP, SCORE, PICKUP_PLUS, SCORE_SPECIMEN, IN_LINE}, UP, ConfigurationInfo.rightElbow.getDeviceName(), Servo.Direction.REVERSE);
+        leftElbow = new StateDrivenServo(new ServoState[]{DOWN, HANG, UP, SCORE, PICKUP_PLUS, PREP_SPECIMEN, SCORE_SPECIMEN, IN_LINE}, UP, ConfigurationInfo.leftElbow.getDeviceName());
+        rightElbow = new StateDrivenServo(new ServoState[]{DOWN, HANG, UP, SCORE, PICKUP_PLUS, PREP_SPECIMEN, SCORE_SPECIMEN, IN_LINE}, UP, ConfigurationInfo.rightElbow.getDeviceName(), Servo.Direction.REVERSE);
 
         leftElbow.init(hwMap);
         rightElbow.init(hwMap);
@@ -48,11 +49,6 @@ public class Elbow extends Mechanism {
         rightElbow.setActiveTargetState(DOWN);
     }
 
-    public void backward() {
-        leftElbow.setActiveTargetState(UP);
-        rightElbow.setActiveTargetState(UP);
-    }
-
     public void inLine() {
         leftElbow.setActiveTargetState(IN_LINE);
         rightElbow.setActiveTargetState(IN_LINE);
@@ -61,6 +57,11 @@ public class Elbow extends Mechanism {
     public void score() {
         leftElbow.setActiveTargetState(SCORE);
         rightElbow.setActiveTargetState(SCORE);
+    }
+
+    public void prepSpecimen() {
+        leftElbow.setActiveTargetState(PREP_SPECIMEN);
+        rightElbow.setActiveTargetState(PREP_SPECIMEN);
     }
 
     public void scoreSpecimen() {
@@ -79,10 +80,10 @@ public class Elbow extends Mechanism {
     }
 
     public void toggleSpecimen() {
-        if (leftElbow.getActiveTargetState() == SCORE) {
+        if (leftElbow.getActiveTargetState() == PREP_SPECIMEN) {
             scoreSpecimen();
         } else {
-            score();
+            prepSpecimen();
         }
     }
 
