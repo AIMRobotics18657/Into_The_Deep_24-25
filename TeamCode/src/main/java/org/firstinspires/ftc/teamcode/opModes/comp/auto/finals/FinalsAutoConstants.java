@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.opModes.comp.auto.finals;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Vector2d;
 
 
 public class FinalsAutoConstants {
@@ -11,7 +10,7 @@ public class FinalsAutoConstants {
 
     public final double ROBOT_WIDTH = 18;
     public final double ROBOT_LENGTH = 16;
-    public static final Pose2d STARTING_POSITION = new Pose2d(-12, 61.5, Math.toRadians(270));
+    public static final Pose2d STARTING_POSITION_SPECIMEN = new Pose2d(-12, 61.5, Math.toRadians(270));
     public static final Pose2d PRELOAD_DROP = new Pose2d(-4, 32.25, Math.toRadians(270));
 
     //PUSH 1
@@ -62,5 +61,34 @@ public class FinalsAutoConstants {
     public static final Pose2d HANG_FOUR_A = new Pose2d(-12, 33, Math.toRadians(270));
     public static final double HANG_FOUR_A_TANGENT = Math.toRadians(270);
 
+
+
+
+
+
+
+    //SAMPLE
+    public static final Pose2d STARTING_POSITION_SAMPLE = new Pose2d(-12, 61.5, Math.toRadians(0));
+    public static final Pose2d PRESCORE = new Pose2d(53, 53, Math.toRadians(45));
+    public static final double PRESCORE_TANGENT = Math.toRadians(180);
+    public static final double PRESCORE_SET_TANGENT = Math.toRadians(270);
+
+    //PICKUP 1
+    public static final Pose2d PICKUP_ONE_A = new Pose2d(48, 40, Math.toRadians(90));
+    public static final Pose2d SCORE_ONE_A = new Pose2d(53, 53, Math.toRadians(45));;
+    public static final double PICKUP_ONE_A_TANGENT = Math.toRadians(-70);
+    public static final double SCORE_ONE_A_TANGENT = Math.toRadians(90);
+
+    //PICKUP 2
+    public static final Pose2d PICKUP_TWO_A = new Pose2d(58, 40, Math.toRadians(180));
+    public static final Pose2d SCORE_TWO_A = new Pose2d(53, 53, Math.toRadians(45));
+    public static final double PICKUP_TWO_A_TANGENT = Math.toRadians(-90);
+    public static final double SCORE_TWO_A_TANGENT = Math.toRadians(90);
+
+    //PICKUP 3
+    public static final Pose2d PICKUP_THREE_A = new Pose2d(56, 25, Math.toRadians(180));
+    public static final Pose2d SCORE_THREE_A = new Pose2d(53, 53, Math.toRadians(45));
+    public static final double PICKUP_THREE_A_TANGENT = Math.toRadians(-90);
+    public static final double SCORE_THREE_A_TANGENT = Math.toRadians(90);
 
 }
