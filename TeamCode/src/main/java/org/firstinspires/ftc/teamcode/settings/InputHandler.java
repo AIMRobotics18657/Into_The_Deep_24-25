@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.settings;
 
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 
+import org.firstinspires.ftc.teamcode.util.InputModification;
+
 public class InputHandler {
     public boolean ADVANCE_AUTOMATION = false;
     public boolean TOGGLE_LOW_HANG = false;
@@ -30,7 +32,7 @@ public class InputHandler {
         ROTATE_HORIZONTAL = Math.abs(aimpad2.getRightStickX()) > 0.4;
         RESET_ROTATION = aimpad2.isRightStickPressed();
         TOGGLE_HAND_ARM = aimpad2.isRightTriggerPressed();
-        SLIDES_CONTROL = -aimpad2.getLeftStickY();
+        SLIDES_CONTROL = InputModification.poweredInput(-aimpad2.getLeftStickY(), GamepadSettings.EXPONENT_MODIFIER);
         MANUAL_OVERRIDE = aimpad2.isDPadLeftHeld();
         SET_SAMPLE = aimpad.isLeftBumperPressed();
         SET_SPECIMEN = aimpad.isRightBumperPressed();

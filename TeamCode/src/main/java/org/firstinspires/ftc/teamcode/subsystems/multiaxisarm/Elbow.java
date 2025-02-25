@@ -19,7 +19,7 @@ public class Elbow extends Mechanism {
     ServoState IN_LINE = new ServoState(.33);
     ServoState PICKUP_PLUS = new ServoState(.38);
     ServoState SCORE = new ServoState(.32);
-    ServoState PREP_SPECIMEN = new ServoState(0.09);
+    ServoState PREP_SPECIMEN = new ServoState(0.13);
     ServoState SCORE_SPECIMEN = new ServoState(0.02);
     ServoState UP = new ServoState(0);
 
