@@ -16,6 +16,7 @@ public class Robot_V2 extends Mechanism {
     boolean isAuto;
     int isRed;
     boolean canFlipBack = false;
+    double lastHeight = 0;
 
     final double RELEASE_MS = 200;
 
@@ -180,6 +181,7 @@ public class Robot_V2 extends Mechanism {
             case SPECIMEN:
                 if (inputHandler.TOGGLE_HAND_ARM) {
                     scoringAssembly.multiAxisArm.hand.toggle();
+                    activeState = RobotState.PREP_SCORING;
                 }
 
                 if (inputHandler.SET_SAMPLE) {
@@ -217,9 +219,11 @@ public class Robot_V2 extends Mechanism {
         }
 
         if (scoringAssembly.areMotorsAtTargetPresets()) {
-//            if (activeScoringMethodType == ScoringMethod.SAMPLE) {
-//                scoringAssembly.slides.setSlidesPosition(Slides.SlidesExtension.HIGH_BUCKET);
-//            }
+            if (activeScoringMethodType == ScoringMethod.SPECIMEN) {
+                if (lastHeight != 0) {
+                    scoringAssembly.slides.setTargetExtension(lastHeight);
+                }
+            }
             activeState = RobotState.SCORING;
         }
 
@@ -232,11 +236,18 @@ public class Robot_V2 extends Mechanism {
     private void scoringState() {
         switch (activeScoringMethodType) {
             case SPECIMEN:
+                if (inputHandler.HIGH_HEIGHT) {
+                    scoringAssembly.slides.aLittleUp();
+                } else if (inputHandler.LOW_HEIGHT) {
+                    scoringAssembly.slides.aLittleDown();
+                }
+
                 if (inputHandler.TOGGLE_HAND_ARM) {
                     scoringAssembly.toggleSpecimen();
                 }
 
                 if (inputHandler.ADVANCE_AUTOMATION) {
+                    lastHeight = scoringAssembly.slides.activeTargetExtension;
                     activeScoringMethodType = ScoringMethod.SPECIMEN;
                     activeState = RobotState.RESETTING;
                 }

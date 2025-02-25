@@ -28,8 +28,8 @@ public class Slides extends Mechanism {
     public enum SlidesExtension {
         RESET_MORE(-500000),
         RESET(0),
-        HIGH_SPECIMEN(7.25),
-        HIGH_SPECIMEN_SCORE(7.25),
+        HIGH_SPECIMEN(7.5),
+        HIGH_SPECIMEN_SCORE(7.5),
         HIGH_SPECIMEN_AUTO(7),
         LOW_BUCKET(14),
         LOW_HANG_CLIP(12),
@@ -93,6 +93,8 @@ public class Slides extends Mechanism {
     private static final double PPR = 384.5;                      // Pulses per revolution of the encoder
     private static final double TICKS_PER_INCH = PPR / PULLEY_CIRCUMFERENCE;     // Encoder ticks per inch of slide travel
     private static final double EXTEND_MAX = 17;
+    private static final double A_LITTLE_UP = 0.4;
+    private static final double A_LITTLE_DOWN = 0.4;
 
     // ===============================================================
     // Additional fields for high-level control (preset positions, pivot)
@@ -333,6 +335,14 @@ public class Slides extends Mechanism {
     public void setSlidesAtPower(double power) {
         setActiveControlState(SlidesControlState.MANUAL);
         updateManualPower(power);
+    }
+
+    public void aLittleUp() {
+        activeTargetExtension += A_LITTLE_UP;
+    }
+
+    public void aLittleDown() {
+        activeTargetExtension -= A_LITTLE_DOWN;
     }
 
     /**
