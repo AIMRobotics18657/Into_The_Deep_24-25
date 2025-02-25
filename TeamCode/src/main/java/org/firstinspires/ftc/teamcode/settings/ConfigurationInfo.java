@@ -14,6 +14,7 @@ public class ConfigurationInfo {
     public static HardwareInterface rightElbow = new HardwareInterface("RE", true, 0);
     public static HardwareInterface rotator = new HardwareInterface("ROT", true, 0);
     public static HardwareInterface flexor = new HardwareInterface("FLX", true, 0);
+    public static HardwareInterface stick = new HardwareInterface("STK", true, 0);
 
     // MOTORS
     public static HardwareInterface leftSlide = new HardwareInterface("LS", true, 0);
