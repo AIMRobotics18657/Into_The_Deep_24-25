@@ -7,16 +7,18 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.subsystems.Pivot;
 import org.firstinspires.ftc.teamcode.subsystems.ScoringAssembly;
 import org.firstinspires.ftc.teamcode.subsystems.Slides;
+import org.firstinspires.ftc.teamcode.subsystems.Stick;
 
 @TeleOp(name="SystemsCheck", group="AAA_COMPETITION")
 public class SystemsCheck extends OpMode {
 
     ScoringAssembly scoringAssembly = new ScoringAssembly();
+    Stick stick = new Stick();
     AIMPad aimPad1;
     AIMPad aimPad2;
 
     enum TestingState {
-        SLIDES, PIVOT, ARM
+        SLIDES, PIVOT, ARM, STICK
     }
 
     TestingState activeTestingState = TestingState.SLIDES;
@@ -24,7 +26,7 @@ public class SystemsCheck extends OpMode {
     @Override
     public void init() {
         scoringAssembly.init(hardwareMap);
-
+        stick.init(hardwareMap);
         aimPad1 = new AIMPad(gamepad1);
         aimPad2 = new AIMPad(gamepad2);
     }
@@ -43,6 +45,9 @@ public class SystemsCheck extends OpMode {
                 break;
             case ARM:
                 armTest();
+                break;
+            case STICK:
+                stickTest();
                 break;
         }
 
@@ -84,6 +89,18 @@ public class SystemsCheck extends OpMode {
 
         if (aimPad1.isYHeld()) {
             scoringAssembly.pivot.setPivotAtPower(-aimPad1.getRightStickY());
+        }
+        if (aimPad1.isStartPressed()) {
+            activeTestingState = TestingState.STICK;
+        }
+    }
+
+    public void stickTest() {
+        stick.loop(aimPad1);
+        if (aimPad1.isAPressed()){
+            stick.stickIn();
+        } else if (aimPad1.isBPressed()) {
+            stick.stickOut();
         }
         if (aimPad1.isStartPressed()) {
             activeTestingState = TestingState.SLIDES;

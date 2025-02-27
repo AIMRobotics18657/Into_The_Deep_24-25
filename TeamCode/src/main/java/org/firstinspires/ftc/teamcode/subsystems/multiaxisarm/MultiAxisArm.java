@@ -38,6 +38,20 @@ public class MultiAxisArm extends Mechanism {
         hand.toggle();
     }
 
+    public void cleanIn() { // TODO TUNE THESE
+        hand.close();
+        wrist.flexNeutral();
+        wrist.rotateInLine();
+        elbow.inLine();
+    }
+
+    public void cleanOut() { // TODO TUNE THESE
+        hand.close();
+        wrist.flexNeutral();
+        wrist.rotateInLine();
+        elbow.inLine();
+    }
+
     public void resetOpen() {
         hand.open();
         wrist.flexNeutral();
