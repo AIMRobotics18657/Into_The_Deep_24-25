@@ -10,9 +10,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.settings.ConfigurationInfo;
 
 public class Stick extends Mechanism {
+
     public StateDrivenServo stick;
-    ServoState STK_OUT = new ServoState(0);
+
+    ServoState STK_OUT = new ServoState(0.6);
     ServoState STK_IN = new ServoState( 1);
+
     public void init(HardwareMap hwMap) {
         stick = new StateDrivenServo(new ServoState[]{STK_OUT,STK_IN}, STK_IN, ConfigurationInfo.stick.getDeviceName());
         stick.init(hwMap);
@@ -27,9 +30,12 @@ public class Stick extends Mechanism {
     public void telemetry(Telemetry telemetry) {
         stick.telemetry(telemetry);
     }
-    public void stickIN() {
+
+    public void stickIn() {
         stick.setActiveTargetState(STK_IN);
     }
-    public void stickOUT() { stick.setActiveTargetState(STK_OUT);
+
+    public void stickOut() {
+        stick.setActiveTargetState(STK_OUT);
     }
 }

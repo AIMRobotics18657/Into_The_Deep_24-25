@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Robot_V2;
 
 @Autonomous(name = "Specimen1_2", group = "AAA_COMP", preselectTeleOp="RedTeleOp")
 public class Specimen1_2 extends LinearOpMode {
-    Robot_V2 robot = new Robot_V2(SupersAutoConstants.STARTING_POSITION, true, 1);
+    Robot_V2 robot = new Robot_V2(SupersAutoConstants.STARTING_POSITION, true);
 
     boolean isDone = false;
 

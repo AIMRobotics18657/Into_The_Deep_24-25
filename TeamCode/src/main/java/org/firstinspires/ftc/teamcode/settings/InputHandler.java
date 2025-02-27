@@ -20,6 +20,7 @@ public class InputHandler {
     public boolean SET_SAMPLE = false;
     public boolean SET_SPECIMEN = false;
     public boolean SET_DUMP = false;
+    public boolean CLEAR_LANDING = false;
 
     public void updateInputs(AIMPad aimpad, AIMPad aimpad2) {
         ADVANCE_AUTOMATION = aimpad2.isDPadUpPressed();
@@ -37,5 +38,6 @@ public class InputHandler {
         SET_SAMPLE = aimpad.isLeftBumperPressed();
         SET_SPECIMEN = aimpad.isRightBumperPressed();
         SET_DUMP = aimpad.isDPadDownPressed();
+        CLEAR_LANDING = aimpad2.isAPressed();
     }
 }

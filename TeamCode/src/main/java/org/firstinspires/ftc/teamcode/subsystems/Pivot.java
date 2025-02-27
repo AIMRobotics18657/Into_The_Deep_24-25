@@ -16,7 +16,7 @@ public class Pivot extends Mechanism {
     // ===============================================================
     // Constants and Control Variables
     // ===============================================================
-    private static final double PROXIMITY_THRESHOLD = 1.5;  // Angle threshold for position accuracy
+    private static final double PROXIMITY_THRESHOLD = 2.2;  // Angle threshold for position accuracy
     private static final double MINIMUM_POWER = 0.03;       // Minimum power before holding position
     private static final double TICKS_PER_DEGREE = 15.4788888; // Encoder ticks per degree
     private static final int STARTING_DEGREES = 67; // Default starting angle
@@ -42,7 +42,7 @@ public class Pivot extends Mechanism {
         START_MORE(STARTING_DEGREES - 20),
         START(STARTING_DEGREES),
         HANG(73),
-        NEW_SCORE(85),
+        NEW_SCORE(88),
         SCORE(83),
         SCORE_SPECIMEN(79),
         SPECIMEN_PICKUP(STARTING_DEGREES),

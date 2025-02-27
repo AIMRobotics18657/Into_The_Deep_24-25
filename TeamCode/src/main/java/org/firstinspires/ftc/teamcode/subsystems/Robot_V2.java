@@ -14,19 +14,21 @@ import org.firstinspires.ftc.teamcode.subsystems.multiaxisarm.Hand;
 public class Robot_V2 extends Mechanism {
 
     boolean isAuto;
-    int isRed;
     boolean canFlipBack = false;
     double lastHeight = 0;
+    boolean setIn = true;
 
-    final double RELEASE_MS = 200;
+    private static final double RELEASE_MS = 200;
+    private static final double CLEAN_TIME = 300;
 
     public Drivebase drivebase;
     public ScoringAssembly scoringAssembly = new ScoringAssembly();
-//    public Hubs hubs = new Hubs();
+    public Stick stick = new Stick();
 
     InputHandler inputHandler = new InputHandler();
 
-    ElapsedTime automationTimer = new ElapsedTime();
+    ElapsedTime sampleDropTimer = new ElapsedTime();
+    ElapsedTime cleaningTimer = new ElapsedTime();
 
     enum RobotState {
         RESETTING,
@@ -35,6 +37,7 @@ public class Robot_V2 extends Mechanism {
         SCORING,
         DROP_SLIDES,
         HANGING,
+        CLEARING,
         TOTAL_FIX
     }
 
@@ -60,10 +63,9 @@ public class Robot_V2 extends Mechanism {
 
     Pose2d startingPose;
 
-    public Robot_V2(Pose2d startingPose, boolean isAuto, int isRed) {
+    public Robot_V2(Pose2d startingPose, boolean isAuto) {
         this.startingPose = startingPose;
         this.isAuto = isAuto;
-        this.isRed = isRed;
         drivebase = new Drivebase(startingPose);
     }
 
@@ -71,12 +73,13 @@ public class Robot_V2 extends Mechanism {
     public void init(HardwareMap hwMap) {
         drivebase.init(hwMap);
         scoringAssembly.init(hwMap);
-//        hubs.init(hwMap);
+        stick.init(hwMap);
     }
 
     @Override
     public void loop(AIMPad aimpad, AIMPad aimpad2) {
         scoringAssembly.loop(aimpad, aimpad2);
+        stick.loop(aimpad);
         if (!isAuto) {
             inputHandler.updateInputs(aimpad, aimpad2);
             drivebase.loop(aimpad);
@@ -99,6 +102,9 @@ public class Robot_V2 extends Mechanism {
                 case HANGING:
                     hanging();
                     break;
+                case CLEARING:
+                    clearLanding();
+                    break;
                 case TOTAL_FIX:
                     totalFix();
             }
@@ -112,7 +118,6 @@ public class Robot_V2 extends Mechanism {
     @Override
     public void telemetry(Telemetry telemetry) {
         scoringAssembly.telemetry(telemetry);
-//        hubs.telemetry(telemetry);
         telemetry.addData("Current State:", activeState);
         telemetry.addData("Current Element:", activeScoringMethodType);
     }
@@ -181,7 +186,6 @@ public class Robot_V2 extends Mechanism {
             case SPECIMEN:
                 if (inputHandler.TOGGLE_HAND_ARM) {
                     scoringAssembly.multiAxisArm.hand.toggle();
-                    activeState = RobotState.PREP_SCORING;
                 }
 
                 if (inputHandler.SET_SAMPLE) {
@@ -193,6 +197,12 @@ public class Robot_V2 extends Mechanism {
                 }
                 break;
         }
+
+//        if (inputHandler.CLEAR_LANDING) {
+//            scoringAssembly.resetSpecimen();
+//            cleaningTimer.reset();
+//            activeState = RobotState.CLEARING;
+//        }
 
         if (inputHandler.ADVANCE_AUTOMATION && scoringAssembly.multiAxisArm.hand.activeHandState == Hand.HandState.CLOSED) {
             activeState = RobotState.PREP_SCORING;
@@ -261,23 +271,16 @@ public class Robot_V2 extends Mechanism {
 
                 if (inputHandler.RELEASE_ELEMENT && scoringAssembly.multiAxisArm.hand.activeHandState == Hand.HandState.CLOSED) {
                     scoringAssembly.multiAxisArm.hand.open();
-                    automationTimer.reset();
+                    sampleDropTimer.reset();
                     canFlipBack = true;
                 }
 
-                if (automationTimer.milliseconds() > RELEASE_MS && canFlipBack) {
+                if (sampleDropTimer.milliseconds() > RELEASE_MS && canFlipBack) {
                     scoringAssembly.multiAxisArm.wrist.flexNeutral();
                     scoringAssembly.resetAvoid();
                     canFlipBack = false;
                     activeState = RobotState.DROP_SLIDES;
-//                    scoringAssembly.pivot.setPivotPosition(Pivot.PivotAngle.HIGH_BUCKET_RESET);
                 }
-
-
-//                if (scoringAssembly.areMotorsAtTargetPresets() && scoringAssembly.multiAxisArm.hand.activeHandState == Hand.HandState.OPEN && !canFlipBack) {
-//                    scoringAssembly.resetAvoid();
-//                    activeState = RobotState.DROP_SLIDES;
-//                }
                 break;
             case DUMPING:
                 if (inputHandler.SET_SAMPLE) {
@@ -338,6 +341,22 @@ public class Robot_V2 extends Mechanism {
                 break;
         }
         if (inputHandler.TOGGLE_LOW_HANG) {
+            activeState = RobotState.RESETTING;
+        }
+    }
+
+    private void clearLanding() {
+        if (cleaningTimer.milliseconds() > CLEAN_TIME) {
+            if (setIn) {
+                scoringAssembly.multiAxisArm.cleanIn();
+                setIn = false;
+            } else {
+                scoringAssembly.multiAxisArm.cleanOut();
+                setIn = true;
+            }
+            cleaningTimer.reset();
+        }
+        if (inputHandler.CLEAR_LANDING) {
             activeState = RobotState.RESETTING;
         }
     }

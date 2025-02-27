@@ -67,22 +67,23 @@ public class ScoringAssembly extends Mechanism {
         pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
         slides.setSlidesPosition(Slides.SlidesExtension.RESET);
     }
+
     public void setScoringResetClamped() {
         multiAxisArm.upClosed();
         pivot.setPivotPosition(Pivot.PivotAngle.NEW_SCORE);
         slides.setSlidesPosition(Slides.SlidesExtension.RESET);
     }
 
+    public void setSampleUpClamped() {
+        multiAxisArm.upClosed();
+        pivot.setPivotPosition(Pivot.PivotAngle.NEW_SCORE);
+        slides.setSlidesPosition(Slides.SlidesExtension.HIGH_BUCKET);
+    }
+
     public void setSpecimenInPosition() {
         multiAxisArm.specimenInPosition();
         pivot.setPivotPosition(Pivot.PivotAngle.SCORE_SPECIMEN);
         slides.setSlidesPosition(Slides.SlidesExtension.HIGH_SPECIMEN);
-    }
-
-    public void setSpecimenScore() {
-        multiAxisArm.specimenInPosition();
-        pivot.setPivotPosition(Pivot.PivotAngle.SCORE_SPECIMEN);
-        slides.setSlidesPosition(Slides.SlidesExtension.HIGH_SPECIMEN_SCORE);
     }
 
     public void toggleSpecimen() {

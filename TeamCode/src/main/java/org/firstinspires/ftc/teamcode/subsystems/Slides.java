@@ -34,7 +34,7 @@ public class Slides extends Mechanism {
         LOW_BUCKET(14),
         LOW_HANG_CLIP(12),
         LOW_HANG(16),
-        HIGH_BUCKET(28.5);
+        HIGH_BUCKET(28.25);
 
         public final double extension;
 
@@ -66,7 +66,7 @@ public class Slides extends Mechanism {
     private PIDFController controller;
 
     // PID and feedforward constants (set to your desired values)
-    private static final double kP = 0.7;
+    private static final double kP = 0.8;
     private static final double kI = 0.03;
     private static final double kD = 0.01;
     private static final double INTEGRAL_SUM_MAX = 15;
@@ -86,7 +86,7 @@ public class Slides extends Mechanism {
     // ===============================================================
     // Constants for motion and safety
     // ===============================================================
-    private static final double PROXIMITY_THRESHOLD = .5;   // Inches tolerance for target extension
+    private static final double PROXIMITY_THRESHOLD = 1;   // Inches tolerance for target extension
     private static final double CURRENT_THRESHOLD = 5000;     // In milliamps
     private static final double MINIMUM_POWER = 0.03;           // Minimum manual power to move slides
     private static final double PULLEY_CIRCUMFERENCE = 4.724757455393701;    // Circumference of the slide pulley (in inches)

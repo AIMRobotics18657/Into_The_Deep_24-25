@@ -17,7 +17,7 @@ public class Wrist extends Mechanism {
     ServoState FLX_NEUTRAL = new ServoState(.8);
     ServoState FLX_SCORE = new ServoState(0.61);
     ServoState FLX_SCORE_SPECIMEN = new ServoState(.71);
-    ServoState FLX_PREP_SPECIMEN = new ServoState(.83);
+    ServoState FLX_PREP_SPECIMEN = new ServoState(.84);
     ServoState FLX_DOWN = new ServoState(.97);
 
     ServoState ROT_IN_LINE = new ServoState(1);
