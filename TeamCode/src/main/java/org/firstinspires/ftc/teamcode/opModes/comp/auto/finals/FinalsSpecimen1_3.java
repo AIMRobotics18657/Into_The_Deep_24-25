@@ -12,7 +12,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import org.firstinspires.ftc.teamcode.subsystems.Robot_V2;
 
 @Autonomous(name = "Specimen1_3", group = "AAA_COMP", preselectTeleOp="RedTeleOp")
-public class Specimen1_2 extends LinearOpMode {
+public class FinalsSpecimen1_3 extends LinearOpMode {
     Robot_V2 robot = new Robot_V2(BackupConstants.STARTING_POSITION, true);
 
     boolean isDone = false;
@@ -42,28 +42,34 @@ public class Specimen1_2 extends LinearOpMode {
         Action pushBlockTwo = robot.drivebase.drive.actionBuilder(BackupConstants.PUSH_ONE_D)
                 .splineToLinearHeading(BackupConstants.PUSH_TWO_A, BackupConstants.PUSH_TWO_A_TANGENT)
                 .splineToLinearHeading(BackupConstants.PUSH_TWO_B, BackupConstants.PUSH_TWO_B_TANGENT)
-                .splineToLinearHeading(BackupConstants.HANG_ONE_A, BackupConstants.HANG_ONE_A_TANGENT)
                 .build();
 
-        Action HangOne = robot.drivebase.drive.actionBuilder(BackupConstants.HANG_ONE_A)
-                .setTangent(FinalsAutoConstants.HANG_A_SET_TANGENT)
-                .splineToLinearHeading(FinalsAutoConstants.HANG_A, FinalsAutoConstants.HANG_A_TANGENT)
-                .splineToLinearHeading(FinalsAutoConstants.HANG_B, FinalsAutoConstants.HANG_B_TANGENT)
-                .splineToLinearHeading(FinalsAutoConstants.HANG_C, FinalsAutoConstants.HANG_C_TANGENT)
+//        Action pushBlockThree = robot.drivebase.drive.actionBuilder(BackupConstants.PUSH_TWO_B)
+//                .splineToLinearHeading(BackupConstants.PUSH_THREE_A, BackupConstants.PUSH_THREE_A_TANGENT)
+//                .strafeTo(BackupConstants.PUSH_THREE_B.position)
+//                .splineToLinearHeading(BackupConstants.HANG_ONE_A, BackupConstants.HANG_ONE_A_TANGENT)
+//                .build();
+
+        Action hangOne = robot.drivebase.drive.actionBuilder(BackupConstants.HANG_ONE_A)
+                .splineToLinearHeading(BackupConstants.HANG_ONE_B, BackupConstants.HANG_ONE_B_TANGENT)
                 .build();
 
-        Action HangTwo = robot.drivebase.drive.actionBuilder(BackupConstants.HANG_ONE_A)
-                .setTangent(FinalsAutoConstants.HANG_A_SET_TANGENT)
-                .splineToLinearHeading(FinalsAutoConstants.HANG_A, FinalsAutoConstants.HANG_A_TANGENT)
-                .splineToLinearHeading(FinalsAutoConstants.HANG_B, FinalsAutoConstants.HANG_B_TANGENT)
-                .splineToLinearHeading(FinalsAutoConstants.HANG_C, FinalsAutoConstants.HANG_C_TANGENT)
+        Action grabTwo = robot.drivebase.drive.actionBuilder(BackupConstants.HANG_ONE_B)
+                .strafeTo(BackupConstants.HANG_TWO_CLEARANCE.position)
+                .splineToLinearHeading(BackupConstants.HANG_TWO_A, BackupConstants.HANG_TWO_A_TANGENT)
                 .build();
 
-        Action HangThree = robot.drivebase.drive.actionBuilder(BackupConstants.HANG_ONE_A)
-                .setTangent(FinalsAutoConstants.HANG_A_SET_TANGENT)
-                .splineToLinearHeading(FinalsAutoConstants.HANG_A, FinalsAutoConstants.HANG_A_TANGENT)
-                .splineToLinearHeading(FinalsAutoConstants.HANG_B, FinalsAutoConstants.HANG_B_TANGENT)
-                .splineToLinearHeading(FinalsAutoConstants.HANG_C, FinalsAutoConstants.HANG_C_TANGENT)
+        Action hangTwo = robot.drivebase.drive.actionBuilder(BackupConstants.HANG_TWO_A)
+                .splineToLinearHeading(BackupConstants.HANG_TWO_B, BackupConstants.HANG_TWO_B_TANGENT)
+                .build();
+
+        Action grabThree = robot.drivebase.drive.actionBuilder(BackupConstants.HANG_TWO_B)
+                .strafeTo(BackupConstants.HANG_THREE_CLEARANCE.position)
+                .splineToLinearHeading(BackupConstants.HANG_THREE_A, BackupConstants.HANG_TWO_A_TANGENT)
+                .build();
+
+        Action hangThree = robot.drivebase.drive.actionBuilder(BackupConstants.HANG_THREE_A)
+                .splineToLinearHeading(BackupConstants.HANG_THREE_B, BackupConstants.HANG_THREE_B_TANGENT)
                 .build();
 
         while (opModeIsActive()){
@@ -96,10 +102,9 @@ public class Specimen1_2 extends LinearOpMode {
                                         robot.scoringAssembly.multiAxisArm.hand.close();
                                         return false;
                                     },
-
                                     new SleepAction(0.25),
                                     new ParallelAction(
-                                            HangOne,
+                                            hangOne,
                                             (telemetryPacket) -> { // Raise slide to drop
                                                 robot.scoringAssembly.setSpecimenClampedAUTO();
                                                 return !robot.scoringAssembly.areMotorsAtTargetPresets();
@@ -112,17 +117,45 @@ public class Specimen1_2 extends LinearOpMode {
                                     new SleepAction(.5),
                                     (telemetryPacket) -> { // Reset Position
                                         robot.scoringAssembly.resetSpecimen();
+                                        return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                    },
+
+                                    //SPECIMEN 2
+
+                                    grabTwo,
+                                    (telemetryPacket) -> { // Grab
+                                        robot.scoringAssembly.multiAxisArm.hand.close();
+                                        return false;
+                                    },
+                                    new SleepAction(0.25),
+                                    new ParallelAction(
+                                            hangTwo,
+                                            (telemetryPacket) -> { // Raise slide to drop
+                                                robot.scoringAssembly.setSpecimenClampedAUTO();
+                                                return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                            }
+                                    ),
+                                    (telemetryPacket) -> { // Clip specimen
+                                        robot.scoringAssembly.multiAxisArm.toggleSpecimen();
+                                        return false;
+                                    },
+                                    new SleepAction(.5),
+                                    (telemetryPacket) -> { // Reset Position
+                                        robot.scoringAssembly.resetSpecimen();
+                                        robot.scoringAssembly.resetAuto();
                                         return !robot.scoringAssembly.areMotorsAtTargetPresets();
                                     },
 
                                     //SPECIMEN 3
+
+                                    grabThree,
                                     (telemetryPacket) -> { // Grab
                                         robot.scoringAssembly.multiAxisArm.hand.close();
                                         return false;
                                     },
                                     new SleepAction(0.25),
                                     new ParallelAction(
-                                            HangTwo,
+                                            hangThree,
                                             (telemetryPacket) -> { // Raise slide to drop
                                                 robot.scoringAssembly.setSpecimenClampedAUTO();
                                                 return !robot.scoringAssembly.areMotorsAtTargetPresets();
@@ -139,35 +172,12 @@ public class Specimen1_2 extends LinearOpMode {
                                         return !robot.scoringAssembly.areMotorsAtTargetPresets();
                                     },
 
-                                    (telemetryPacket) -> { // Grab
-                                        robot.scoringAssembly.multiAxisArm.hand.close();
-                                        return false;
-                                    },
-                                    new SleepAction(0.25),
-                                    new ParallelAction(
-                                            HangThree,
-                                            (telemetryPacket) -> { // Raise slide to drop
-                                                robot.scoringAssembly.setSpecimenClampedAUTO();
-                                                return !robot.scoringAssembly.areMotorsAtTargetPresets();
-                                            }
-                                    ),
-                                    (telemetryPacket) -> { // Clip specimen
-                                        robot.scoringAssembly.multiAxisArm.toggleSpecimen();
-                                        return false;
-                                    },
-                                    new SleepAction(.5),
-                                    (telemetryPacket) -> { // Reset Position
-                                        robot.scoringAssembly.resetSpecimen();
-                                        robot.scoringAssembly.resetAuto();
-                                        return !robot.scoringAssembly.areMotorsAtTargetPresets();
-                                    },
 
                                     (telemetryPacket) -> { // End Auto
                                         isDone = true;
                                         return false;
                                     }
                             )
-
                     )
             );
             break;
