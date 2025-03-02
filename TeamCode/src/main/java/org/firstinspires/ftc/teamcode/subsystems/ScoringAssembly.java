@@ -86,16 +86,6 @@ public class ScoringAssembly extends Mechanism {
         slides.setSlidesPosition(Slides.SlidesExtension.HIGH_SPECIMEN);
     }
 
-    public void toggleSpecimen() {
-        multiAxisArm.toggleSpecimen();
-        pivot.setPivotPosition(Pivot.PivotAngle.SCORE_SPECIMEN);
-        if (slides.activeSlidesTarget == Slides.SlidesExtension.HIGH_SPECIMEN) {
-            slides.setSlidesPosition(Slides.SlidesExtension.HIGH_SPECIMEN_SCORE);
-        } else {
-            slides.setSlidesPosition(Slides.SlidesExtension.HIGH_SPECIMEN);
-        }
-    }
-
     public void setSpecimenClampedAUTO() {
         multiAxisArm.specimenInPosition();
         pivot.setPivotPosition(Pivot.PivotAngle.SPECIMEN_PICKUP);
@@ -106,6 +96,12 @@ public class ScoringAssembly extends Mechanism {
         multiAxisArm.neutral();
         slides.setSlidesPosition(Slides.SlidesExtension.RESET_MORE);
         pivot.setPivotPosition(Pivot.PivotAngle.START_MORE);
+    }
+
+    public void samplePark() {
+        multiAxisArm.samplePark();
+        slides.setSlidesPosition(Slides.SlidesExtension.SAMPLE_PARK);
+        pivot.setPivotPosition(Pivot.PivotAngle.SAMPLE_PARK);
     }
 
     //====================================================================================================

@@ -52,7 +52,7 @@ public class Drivebase extends Mechanism {
 
     private void manualDrive(AIMPad gamepad, boolean isFieldCentric) {
         double y = InputModification.poweredInput(deadzonedStickInput(-gamepad.getLeftStickY()), GamepadSettings.EXPONENT_MODIFIER);
-        double x = InputModification.poweredInput(deadzonedStickInput(-gamepad.getLeftStickX()), GamepadSettings.EXPONENT_MODIFIER);
+        double x = InputModification.poweredInput(deadzonedStickInput(-gamepad.getLeftStickX() * 1.1), GamepadSettings.EXPONENT_MODIFIER);
         double rx = InputModification.poweredInput(deadzonedStickInput(-gamepad.getRightStickX()), GamepadSettings.EXPONENT_MODIFIER);
 
         // Create left stick vector

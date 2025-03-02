@@ -16,11 +16,11 @@ public class InputHandler {
     public boolean RESET_ROTATION = false;
     public boolean TOGGLE_HAND_ARM = false;
     public double SLIDES_CONTROL = 0;
-    public boolean MANUAL_OVERRIDE = false;
+    public double PIVOT_CONTROL = 0;
     public boolean SET_SAMPLE = false;
     public boolean SET_SPECIMEN = false;
     public boolean SET_DUMP = false;
-    public boolean CLEAR_LANDING = false;
+    public boolean WE_R_COOKED = false;
 
     public void updateInputs(AIMPad aimpad, AIMPad aimpad2) {
         ADVANCE_AUTOMATION = aimpad2.isDPadUpPressed();
@@ -30,14 +30,14 @@ public class InputHandler {
         LOW_HEIGHT = aimpad2.isLeftBumperPressed();
         HIGH_HEIGHT = aimpad2.isRightBumperPressed();
         RELEASE_ELEMENT = aimpad2.isRightTriggerPressed();
-        ROTATE_HORIZONTAL = Math.abs(aimpad2.getRightStickX()) > 0.4;
-        RESET_ROTATION = aimpad2.isRightStickPressed();
+        ROTATE_HORIZONTAL = Math.abs(aimpad2.getRightStickX()) > 0.6;
+        RESET_ROTATION = aimpad2.isAPressed();
         TOGGLE_HAND_ARM = aimpad2.isRightTriggerPressed();
         SLIDES_CONTROL = InputModification.poweredInput(-aimpad2.getLeftStickY(), GamepadSettings.EXPONENT_MODIFIER);
-        MANUAL_OVERRIDE = aimpad2.isDPadLeftHeld();
+        PIVOT_CONTROL = InputModification.poweredInput(-aimpad2.getRightStickY(), GamepadSettings.EXPONENT_MODIFIER);
         SET_SAMPLE = aimpad.isLeftBumperPressed();
         SET_SPECIMEN = aimpad.isRightBumperPressed();
         SET_DUMP = aimpad.isDPadDownPressed();
-        CLEAR_LANDING = aimpad2.isAPressed();
+        WE_R_COOKED = aimpad2.isStartHeld() && aimpad2.isYPressed();
     }
 }

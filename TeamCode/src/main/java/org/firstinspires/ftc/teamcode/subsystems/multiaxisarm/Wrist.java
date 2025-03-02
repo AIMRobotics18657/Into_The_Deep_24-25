@@ -14,8 +14,8 @@ public class Wrist extends Mechanism {
     public StateDrivenServo rotator;
     public StateDrivenServo flexor;
 
-    ServoState FLX_NEUTRAL = new ServoState(.8);
-    ServoState FLX_SCORE = new ServoState(0.61);
+    ServoState FLX_NEUTRAL = new ServoState(.80);
+    ServoState FLX_SCORE = new ServoState(0.645);
     ServoState FLX_SCORE_SPECIMEN = new ServoState(.71);
     ServoState FLX_PREP_SPECIMEN = new ServoState(.84);
     ServoState FLX_DOWN = new ServoState(.97);
