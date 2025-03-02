@@ -226,12 +226,16 @@ public class FinalsSamplePark extends LinearOpMode {
                                             park,
                                             new SequentialAction(
                                                 new SleepAction(1),
-                                                    (telemetryPacket) -> { // Done
-                                                        robot.scoringAssembly.samplePark();
+                                                    (telemetryPacket) -> { // Lower Slides
+                                                        robot.scoringAssembly.slides.setSlidesPosition(Slides.SlidesExtension.SAMPLE_PARK);
                                                         return !robot.scoringAssembly.areMotorsAtTargetPresets();
                                                     }
                                             )
                                     ),
+                                    (telemetryPacket) -> { // Park
+                                        robot.scoringAssembly.samplePark();
+                                        return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                    },
                                     (telemetryPacket) -> { // Done
                                         isDone = true;
                                         return false;

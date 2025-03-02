@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opModes.comp.auto.supers;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -10,6 +11,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import org.firstinspires.ftc.teamcode.subsystems.Robot_V2;
 
 @Autonomous(name = "Sample1_2", group = "AAA_COMP", preselectTeleOp="RedTeleOp")
+@Disabled
 public class Sample1_2 extends LinearOpMode {
     Robot_V2 robot = new Robot_V2(SupersAutoConstantsSample.STARTING_POSITION, true);
 

@@ -12,7 +12,7 @@ public class FinalsAutoConstants {
     public final double ROBOT_WIDTH = 18;
     public final double ROBOT_LENGTH = 16;
     public static final Pose2d STARTING_POSITION_SPECIMEN = new Pose2d(-12, 62, Math.toRadians(270));
-    public static final Pose2d PRELOAD_DROP = new Pose2d(-2, 31.5, Math.toRadians(270));
+    public static final Pose2d PRELOAD_DROP = new Pose2d(-4, 31.5, Math.toRadians(270));
     public static final double PUSH_SET_TANGENT = Math.toRadians(150);
 
     //PUSH 1
@@ -32,7 +32,7 @@ public class FinalsAutoConstants {
     //PUSH 3
     public static final Pose2d PUSH_THREE_A = new Pose2d(-55.5, 28.5, Math.toRadians(230));
     public static final Pose2d PUSH_THREE_B = new Pose2d(-51, 52.5, Math.toRadians(165));
-    public static final Pose2d PUSH_THREE_C = new Pose2d(-36, 66, Math.toRadians(290));
+    public static final Pose2d PUSH_THREE_C = new Pose2d(-36, 69, Math.toRadians(290));
     public static final double PUSH_THREE_A_TANGENT = Math.toRadians(180);
     public static final double PUSH_THREE_B_C_TANGENT = Math.toRadians(90);
 
@@ -45,25 +45,25 @@ public class FinalsAutoConstants {
     //HANG 1
     public static final Pose2d HANG_ONE_A = new Pose2d(2, 29, Math.toRadians(270));
     public static final double HANG_ONE_A_TANGENT = Math.toRadians(270);
-    public static final Pose2d HANG_ONE_B = new Pose2d(-36.5, 65.5, Math.toRadians(270));
+    public static final Pose2d HANG_ONE_B = new Pose2d(-36.5, 69, Math.toRadians(270));
     public static final double HANG_ONE_B_TANGENT = Math.toRadians(90);
 
     //HANG 2
     public static final Pose2d HANG_TWO_A = new Pose2d(0, 29, Math.toRadians(270));
     public static final double HANG_TWO_A_TANGENT = Math.toRadians(270);
-    public static final Pose2d HANG_TWO_B = new Pose2d(-36.5, 65.5, Math.toRadians(270));
+    public static final Pose2d HANG_TWO_B = new Pose2d(-36.5, 69, Math.toRadians(270));
     public static final double HANG_TWO_B_TANGENT = Math.toRadians(90);
 
     //HANG 3
     public static final Pose2d HANG_THREE_A = new Pose2d(-2, 29, Math.toRadians(270));
     public static final double HANG_THREE_A_TANGENT = Math.toRadians(270);
-    public static final Pose2d HANG_THREE_B = new Pose2d(-36.5, 65.5, Math.toRadians(270));
+    public static final Pose2d HANG_THREE_B = new Pose2d(-36.5, 69, Math.toRadians(270));
     public static final double HANG_THREE_B_TANGENT = Math.toRadians(90);
 
 
     public static final Pose2d HANG_A = new Pose2d(-5, 33.25, Math.toRadians(270));
     public static final Pose2d HANG_B = new Pose2d(-3, 33, Math.toRadians(270));
-    public static final Pose2d HANG_C = new Pose2d(-36, 66, Math.toRadians(270));
+    public static final Pose2d HANG_C = new Pose2d(-36, 69, Math.toRadians(270));
     public static final double HANG_A_TANGENT = Math.toRadians(270);
     public static final double HANG_B_TANGENT = Math.toRadians(0);
     public static final double HANG_C_TANGENT = Math.toRadians(90);

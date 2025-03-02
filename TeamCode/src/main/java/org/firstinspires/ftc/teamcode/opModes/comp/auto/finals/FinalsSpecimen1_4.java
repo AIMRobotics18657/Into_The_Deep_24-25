@@ -91,7 +91,7 @@ public class FinalsSpecimen1_4 extends LinearOpMode {
                                             preHang,
                                             (telemetryPacket) -> { // Raise slide to drop
                                                 robot.scoringAssembly.setSpecimenInPosition();
-                                                return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                                return false;
                                             }
                                     ),
                                     new ParallelAction(
@@ -134,7 +134,7 @@ public class FinalsSpecimen1_4 extends LinearOpMode {
                                                     new ParallelAction(
                                                             (telemetryPacket) -> { // Raise slide to drop
                                                                 robot.scoringAssembly.setSpecimenInPosition();
-                                                                return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                                                return false;
                                                             },
                                                             new SleepAction(clipWaitSeconds)
                                                     ),
@@ -168,7 +168,7 @@ public class FinalsSpecimen1_4 extends LinearOpMode {
                                                     new ParallelAction(
                                                             (telemetryPacket) -> { // Raise slide to drop
                                                                 robot.scoringAssembly.setSpecimenInPosition();
-                                                                return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                                                return false;
                                                             },
                                                             new SleepAction(clipWaitSeconds)
                                                     ),
@@ -203,7 +203,7 @@ public class FinalsSpecimen1_4 extends LinearOpMode {
                                                     new ParallelAction(
                                                             (telemetryPacket) -> { // Raise slide to drop
                                                                 robot.scoringAssembly.setSpecimenInPosition();
-                                                                return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                                                return false;
                                                             },
                                                             new SleepAction(clipWaitSeconds)
                                                     ),
@@ -238,7 +238,7 @@ public class FinalsSpecimen1_4 extends LinearOpMode {
                                                     new ParallelAction(
                                                             (telemetryPacket) -> { // Raise slide to drop
                                                                 robot.scoringAssembly.setSpecimenInPosition();
-                                                                return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                                                return false;
                                                             },
                                                             new SleepAction(clipWaitSeconds)
                                                     ),

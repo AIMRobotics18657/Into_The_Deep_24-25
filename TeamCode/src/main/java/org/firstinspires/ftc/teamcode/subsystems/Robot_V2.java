@@ -34,7 +34,6 @@ public class Robot_V2 extends Mechanism {
         SCORING,
         DROP_SLIDES,
         HANGING,
-        REZERO,
         CHAT_WERE_COOKED
     }
 
@@ -54,7 +53,7 @@ public class Robot_V2 extends Mechanism {
 
     ScoringMethod activeScoringMethodType = ScoringMethod.SPECIMEN;
 
-    RobotState activeState = RobotState.RESETTING;
+    RobotState activeState = RobotState.CHAT_WERE_COOKED;
 
     HangState hangState = HangState.START;
 
@@ -99,8 +98,6 @@ public class Robot_V2 extends Mechanism {
                 case HANGING:
                     hanging();
                     break;
-                case REZERO:
-                    totalFix();
                 case CHAT_WERE_COOKED:
                     fixTheCookage();
             }
@@ -122,9 +119,12 @@ public class Robot_V2 extends Mechanism {
     private void resettingState() {
         switch (activeScoringMethodType) {
             case SAMPLE:
-                activeState = RobotState.SEARCHING;
-            case DUMPING:
                 scoringAssembly.setPickupReset();
+                break;
+            case DUMPING:
+                scoringAssembly.multiAxisArm.down();
+                scoringAssembly.pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
+                activeState = RobotState.SEARCHING
                 break;
             case SPECIMEN:
                 scoringAssembly.reset();
@@ -337,14 +337,8 @@ public class Robot_V2 extends Mechanism {
         }
     }
 
-    private void totalFix() {
-        scoringAssembly.totalFix();
-        if (inputHandler.ADVANCE_AUTOMATION) {
-            activeState = RobotState.RESETTING;
-        }
-    }
-
     private void fixTheCookage() {
+        scoringAssembly.multiAxisArm.neutral();
         scoringAssembly.slides.setSlidesAtPower(inputHandler.SLIDES_CONTROL);
         scoringAssembly.pivot.setPivotAtPower(inputHandler.PIVOT_CONTROL);
         if (inputHandler.ADVANCE_AUTOMATION) {

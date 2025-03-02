@@ -14,7 +14,7 @@ public class Elbow extends Mechanism {
     public StateDrivenServo leftElbow;
     public StateDrivenServo rightElbow;
 
-    ServoState DOWN = new ServoState(.87);
+    ServoState DOWN = new ServoState(.9);
     ServoState HANG = new ServoState(.7);
     ServoState IN_LINE = new ServoState(.33);
     ServoState PICKUP_PLUS = new ServoState(.38);

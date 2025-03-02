@@ -187,11 +187,11 @@ public class Pivot extends Mechanism {
     // ===============================================================
 
     private void applyManualPower() {
-        if (Math.abs(manualPower) > MINIMUM_POWER) {
+//        if (Math.abs(manualPower) > MINIMUM_POWER) {
             setPower(manualPower);
-        } else {
-            holdPosition();
-        }
+//        } else {
+//            holdPosition();
+//        }
     }
 
     private void holdPosition() {
