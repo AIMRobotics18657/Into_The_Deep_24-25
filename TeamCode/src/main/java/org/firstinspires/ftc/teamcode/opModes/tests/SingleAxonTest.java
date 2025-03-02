@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opModes.tests;
 
 import com.aimrobotics.aimlib.gamepad.AIMPad;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.subsystems.multiaxisarm.MultiAxisArm;
 import org.firstinspires.ftc.teamcode.subsystems.Slides;
 
 @TeleOp(name="AxonTest", group="AAA_COMPETITION")
+@Disabled
 public class SingleAxonTest extends OpMode {
 
     Hand hand = new Hand();

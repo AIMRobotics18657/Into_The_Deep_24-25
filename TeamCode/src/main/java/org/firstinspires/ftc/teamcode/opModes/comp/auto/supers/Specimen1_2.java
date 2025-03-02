@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -12,6 +13,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import org.firstinspires.ftc.teamcode.subsystems.Robot_V2;
 
 @Autonomous(name = "Specimen1_2", group = "AAA_COMP", preselectTeleOp="RedTeleOp")
+@Disabled
 public class Specimen1_2 extends LinearOpMode {
     Robot_V2 robot = new Robot_V2(SupersAutoConstants.STARTING_POSITION, true);
 

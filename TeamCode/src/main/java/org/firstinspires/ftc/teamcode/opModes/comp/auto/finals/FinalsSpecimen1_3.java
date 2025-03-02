@@ -59,7 +59,7 @@ public class FinalsSpecimen1_3 extends LinearOpMode {
                 .splineToLinearHeading(FinalsAutoConstants.HANG_ONE_B, FinalsAutoConstants.HANG_ONE_B_TANGENT)
                 .build();
 
-        Action hangTwo = robot.drivebase.drive.actionBuilder(FinalsAutoConstants.HANG_ONE_B)
+        Action hangTwo = robot.drivebase.drive.actionBuilder(FinalsAutoConstants.PUSHED_RELOCALIZE_POSE)
                 .setTangent(FinalsAutoConstants.HANG_A_SET_TANGENT)
                 .splineToLinearHeading(FinalsAutoConstants.HANG_TWO_A, FinalsAutoConstants.HANG_TWO_A_TANGENT)
                 .build();
@@ -69,7 +69,7 @@ public class FinalsSpecimen1_3 extends LinearOpMode {
                 .splineToLinearHeading(FinalsAutoConstants.HANG_TWO_B, FinalsAutoConstants.HANG_TWO_B_TANGENT)
                 .build();
 
-        Action hangThree = robot.drivebase.drive.actionBuilder(FinalsAutoConstants.HANG_TWO_B)
+        Action hangThree = robot.drivebase.drive.actionBuilder(FinalsAutoConstants.PUSHED_RELOCALIZE_POSE)
                 .setTangent(FinalsAutoConstants.HANG_A_SET_TANGENT)
                 .splineToLinearHeading(FinalsAutoConstants.HANG_THREE_A, FinalsAutoConstants.HANG_THREE_A_TANGENT)
                 .build();
@@ -93,7 +93,7 @@ public class FinalsSpecimen1_3 extends LinearOpMode {
                                             preHang,
                                             (telemetryPacket) -> { // Raise slide to drop
                                                 robot.scoringAssembly.setSpecimenInPosition();
-                                                return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                                return false;
                                             }
                                     ),
                                     new ParallelAction(
@@ -107,7 +107,7 @@ public class FinalsSpecimen1_3 extends LinearOpMode {
                                                         robot.scoringAssembly.multiAxisArm.specimenPickup();
                                                         return false;
                                                     },
-                                                    new SleepAction(1.55),
+                                                    new SleepAction(1.3),
                                                     (telemetryPacket) -> { // Reset Position
                                                         robot.stick.stickOut();
                                                         robot.scoringAssembly.resetSpecimen();
@@ -129,12 +129,12 @@ public class FinalsSpecimen1_3 extends LinearOpMode {
                                         robot.drivebase.drive.localizer.setPose(FinalsAutoConstants.PUSHED_RELOCALIZE_POSE);
                                         return false;
                                     },
-                                    new SleepAction(0.15),
+                                    new SleepAction(0.25),
                                     new ParallelAction(
                                             hangOne,
                                             (telemetryPacket) -> { // Raise slide to drop
                                                 robot.scoringAssembly.setSpecimenInPosition();
-                                                return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                                return false;
                                             }
                                     ),
                                     new ParallelAction(
@@ -144,7 +144,7 @@ public class FinalsSpecimen1_3 extends LinearOpMode {
                                                     robot.scoringAssembly.multiAxisArm.toggleSpecimen();
                                                     return false;
                                                 },
-                                                new SleepAction(0.1),
+                                                new SleepAction(0.2),
                                                 (telemetryPacket) -> { // Reset Position
                                                     robot.scoringAssembly.resetSpecimen();
                                                     return !robot.scoringAssembly.areMotorsAtTargetPresets();
@@ -158,12 +158,12 @@ public class FinalsSpecimen1_3 extends LinearOpMode {
                                         robot.scoringAssembly.multiAxisArm.hand.close();
                                         return false;
                                     },
-                                    new SleepAction(0.15),
+                                    new SleepAction(0.25),
                                     new ParallelAction(
                                             hangTwo,
                                             (telemetryPacket) -> { // Raise slide to drop
                                                 robot.scoringAssembly.setSpecimenInPosition();
-                                                return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                                return false;
                                             }
                                     ),
                                     new ParallelAction(
@@ -173,7 +173,7 @@ public class FinalsSpecimen1_3 extends LinearOpMode {
                                                         robot.scoringAssembly.multiAxisArm.toggleSpecimen();
                                                         return false;
                                                     },
-                                                    new SleepAction(0.1),
+                                                    new SleepAction(0.2),
                                                     (telemetryPacket) -> { // Reset Position
                                                         robot.scoringAssembly.resetSpecimen();
                                                         return !robot.scoringAssembly.areMotorsAtTargetPresets();
@@ -187,12 +187,12 @@ public class FinalsSpecimen1_3 extends LinearOpMode {
                                         robot.scoringAssembly.multiAxisArm.hand.close();
                                         return false;
                                     },
-                                    new SleepAction(0.15),
+                                    new SleepAction(0.25),
                                     new ParallelAction(
                                             hangThree,
                                             (telemetryPacket) -> { // Raise slide to drop
                                                 robot.scoringAssembly.setSpecimenInPosition();
-                                                return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                                return false;
                                             }
                                     ),
                                     new ParallelAction(
@@ -202,7 +202,7 @@ public class FinalsSpecimen1_3 extends LinearOpMode {
                                                         robot.scoringAssembly.multiAxisArm.toggleSpecimen();
                                                         return false;
                                                     },
-                                                    new SleepAction(0.1),
+                                                    new SleepAction(0.2),
                                                     (telemetryPacket) -> { // Reset Position
                                                         robot.scoringAssembly.resetSpecimen();
                                                         return !robot.scoringAssembly.areMotorsAtTargetPresets();

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opModes.comp.teleOp;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.aimrobotics.aimlib.gamepad.AIMPad;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.opModes.comp.auto.supers.SupersAutoConstan
 import org.firstinspires.ftc.teamcode.subsystems.Robot_V2;
 
 @TeleOp(name="BlueTeleOp", group="AAA_COMP")
+@Disabled
 public class BlueTeleOp extends OpMode {
 
     Robot_V2 robot;
