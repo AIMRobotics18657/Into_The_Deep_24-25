@@ -124,7 +124,7 @@ public class Robot_V2 extends Mechanism {
             case DUMPING:
                 scoringAssembly.multiAxisArm.down();
                 scoringAssembly.pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
-                activeState = RobotState.SEARCHING
+                activeState = RobotState.SEARCHING;
                 break;
             case SPECIMEN:
                 scoringAssembly.reset();
