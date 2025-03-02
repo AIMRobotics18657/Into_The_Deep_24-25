@@ -26,10 +26,11 @@ public class Slides extends Mechanism {
     }
 
     public enum SlidesExtension {
-        RESET_MORE(-500000),
+        RESET_MORE(-50),
         RESET(0),
-        HIGH_SPECIMEN(7.5),
-        HIGH_SPECIMEN_SCORE(7.5),
+        SAMPLE_PARK(6),
+        HIGH_SPECIMEN(8),
+        HIGH_SPECIMEN_SCORE(8),
         HIGH_SPECIMEN_AUTO(7),
         LOW_BUCKET(14),
         LOW_HANG_CLIP(12),
@@ -70,9 +71,9 @@ public class Slides extends Mechanism {
     private static final double kI = 0.03;
     private static final double kD = 0.01;
     private static final double INTEGRAL_SUM_MAX = 15;
-    private static final double kV = 0.01;
-    private static final double kA = 0.01;
-    private static final double kStatic = 0.0002;
+    private static final double kV = 0.00;
+    private static final double kA = 0.00;
+    private static final double kStatic = 0;
     private static final double kCos = 0;
     private static final double kG = 0;
 
@@ -87,14 +88,14 @@ public class Slides extends Mechanism {
     // Constants for motion and safety
     // ===============================================================
     private static final double PROXIMITY_THRESHOLD = 1;   // Inches tolerance for target extension
-    private static final double CURRENT_THRESHOLD = 5000;     // In milliamps
+    private static final int HARDSTOPPED_MILLIAMPS = 4000;   // In milliamps
     private static final double MINIMUM_POWER = 0.03;           // Minimum manual power to move slides
     private static final double PULLEY_CIRCUMFERENCE = 4.724757455393701;    // Circumference of the slide pulley (in inches)
     private static final double PPR = 384.5;                      // Pulses per revolution of the encoder
     private static final double TICKS_PER_INCH = PPR / PULLEY_CIRCUMFERENCE;     // Encoder ticks per inch of slide travel
     private static final double EXTEND_MAX = 17;
-    private static final double A_LITTLE_UP = 0.4;
-    private static final double A_LITTLE_DOWN = 0.4;
+    private static final double A_LITTLE_UP = 0.5;
+    private static final double A_LITTLE_DOWN = 0.5;
 
     // ===============================================================
     // Additional fields for high-level control (preset positions, pivot)
@@ -123,7 +124,7 @@ public class Slides extends Mechanism {
         rightSlide.setDirection(rightMotorDirection);
 
         // Use one motor as the primary encoder source (can be adjusted as needed)
-        activeEncoderMotor = rightSlide;
+        activeEncoderMotor = leftSlide;
         lastActiveEncoderExtension = 0;
 
         controller = new PIDFController(kP, kI, kD, INTEGRAL_SUM_MAX, kV, kA, kStatic, kCos, kG, PIDFController.FeedforwardType.LINEAR);
@@ -227,10 +228,10 @@ public class Slides extends Mechanism {
     }
 
     /**
-     * Check if a current spike is detected.
+     * Check if a current spikes due to being hardstopped
      */
-    public boolean currentSpikeDetected() {
-        return activeEncoderMotor.getCurrent(CurrentUnit.MILLIAMPS) > CURRENT_THRESHOLD;
+    public boolean isHardstopped() {
+        return activeEncoderMotor.getCurrent(CurrentUnit.MILLIAMPS) > HARDSTOPPED_MILLIAMPS;
     }
 
     /**
@@ -291,15 +292,15 @@ public class Slides extends Mechanism {
      * and no current spike is detected, the power is applied; otherwise, the slides hold position.
      */
     private void applyManualPower() {
-        if (Math.abs(manualPower) > MINIMUM_POWER && !currentSpikeDetected()) {
+//        if (Math.abs(manualPower) > MINIMUM_POWER) {
              if (getCurrentExtension() > EXTEND_MAX) {
                  setPower(-1);
              } else  {
                  setPower(manualPower);
              }
-        } else {
-            holdPosition();
-        }
+//        } else {
+//            holdPosition();
+//        }
     }
 
     /**
@@ -333,8 +334,8 @@ public class Slides extends Mechanism {
      * Manually drive the slides at the specified power.
      */
     public void setSlidesAtPower(double power) {
-        setActiveControlState(SlidesControlState.MANUAL);
         updateManualPower(power);
+        setActiveControlState(SlidesControlState.MANUAL);
     }
 
     public void aLittleUp() {

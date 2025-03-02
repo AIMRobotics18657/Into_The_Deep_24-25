@@ -16,11 +16,12 @@ public class Pivot extends Mechanism {
     // ===============================================================
     // Constants and Control Variables
     // ===============================================================
-    private static final double PROXIMITY_THRESHOLD = 2.2;  // Angle threshold for position accuracy
+    private static final double PROXIMITY_THRESHOLD = 2;  // Angle threshold for position accuracy
     private static final double MINIMUM_POWER = 0.03;       // Minimum power before holding position
     private static final double TICKS_PER_DEGREE = 15.4788888; // Encoder ticks per degree
     private static final int STARTING_DEGREES = 67; // Default starting angle
-    private static final int MOVEMENT_PREVENTION_MILLIAMPS = 7500; // Prevents movement if current exceeds this value TODO FIND THIS THING PLEASE
+    private static final int MOVEMENT_PREVENTION_MILLIAMPS = 7500; // Prevents movement if current exceeds this value
+    private static final int HARDSTOPPED_MILLIAMPS = 4000;
     private static final int HIGH_PIDF_SWAP = 16;
 
     private DcMotorEx pivotMotor;
@@ -39,19 +40,20 @@ public class Pivot extends Mechanism {
     }
 
     public enum PivotAngle {
-        START_MORE(STARTING_DEGREES - 20),
+        START_MORE(STARTING_DEGREES - 110),
         START(STARTING_DEGREES),
         HANG(73),
-        NEW_SCORE(88),
+        NEW_SCORE(87.3),
         SCORE(83),
         SCORE_SPECIMEN(79),
         SPECIMEN_PICKUP(STARTING_DEGREES),
         HIGH_BUCKET_RESET(97),
+        SAMPLE_PARK(120),
         PICKUP(173);
 
-        public final int angle;
+        public final double angle;
 
-        PivotAngle(int angle) {
+        PivotAngle(double angle) {
             this.angle = angle;
         }
     }
@@ -62,17 +64,17 @@ public class Pivot extends Mechanism {
     // ===============================================================
     // PIDF Constants
     // ===============================================================
-    private static final double kP = 0.11;
+    private static final double kP = 0.09;
     private static final double kI = 0.005;
     private static final double kD = 0.01;
-    private static final double INTEGRAL_SUM_MAX = 50;
+    private static final double INTEGRAL_SUM_MAX = 30;
     private static final double kV = 0.0;
     private static final double kA = 0.0;
     private static final double kStatic = 0.0;
     private static final double kCos = 0.01;
     private static final double kG = 0.0;
 
-    private static final double highKP = .18;
+    private static final double highKP = .16;
     private static final double highKI = 0.01;
     private static final double highKD = 0.01;
     private static final double HIGH_INTEGRAL_SUM_MAX = 30;
@@ -136,6 +138,7 @@ public class Pivot extends Mechanism {
         telemetry.addData("Current Angle: ", getCurrentAngle());
         telemetry.addData("Target Angle: ", activeTargetAngle);
         telemetry.addData("Current Extension Feed Through:", slides.getCurrentExtension());
+        telemetry.addData("Current Millis ARM", pivotMotor.getCurrent(CurrentUnit.MILLIAMPS));
     }
 
     // ===============================================================
@@ -165,11 +168,6 @@ public class Pivot extends Mechanism {
         controller.setTargetPos(activeTargetAngle);
     }
 
-    private void holdAtCurrentAngle() {
-        setTargetAngle(lastAngle);
-        update();
-    }
-
     private void confirmPresetAngle() {
         if (activeTargetAngle != activePivotTarget.angle) {
             setTargetAngle(activePivotTarget.angle);
@@ -189,11 +187,16 @@ public class Pivot extends Mechanism {
     // ===============================================================
 
     private void applyManualPower() {
-        setPower(manualPower);
-//        if (Math.abs(manualPower) > MINIMUM_POWER) {
-//        } else {
-//            holdAtCurrentAngle();
-//        }
+        if (Math.abs(manualPower) > MINIMUM_POWER) {
+            setPower(manualPower);
+        } else {
+            holdPosition();
+        }
+    }
+
+    private void holdPosition() {
+        setTargetAngle(lastAngle);
+        update();
     }
 
     public void updateManualPower(double power) {
@@ -229,6 +232,10 @@ public class Pivot extends Mechanism {
 
     public boolean isMovementPrevented() {
         return pivotMotor.getCurrent(CurrentUnit.MILLIAMPS) > MOVEMENT_PREVENTION_MILLIAMPS && !isAtTargetPreset();
+    }
+
+    public boolean isHardstopped() {
+        return pivotMotor.getCurrent(CurrentUnit.MILLIAMPS) > HARDSTOPPED_MILLIAMPS;
     }
 
     public void updatePIDFController() {

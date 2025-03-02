@@ -20,7 +20,7 @@ public class Hand extends Mechanism {
 
     public HandState activeHandState = HandState.OPEN;
 
-    ServoState CLOSED = new ServoState(0.365);
+    ServoState CLOSED = new ServoState(0.37);
     ServoState OPEN = new ServoState(.89);
 
     @Override

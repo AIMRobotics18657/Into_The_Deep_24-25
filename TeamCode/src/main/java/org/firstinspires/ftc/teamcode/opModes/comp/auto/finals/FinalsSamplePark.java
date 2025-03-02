@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opModes.comp.auto.finals;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SleepAction;
+import com.acmerobotics.roadrunner.VelConstraint;
 import com.aimrobotics.aimlib.gamepad.AIMPad;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -58,8 +59,9 @@ public class FinalsSamplePark extends LinearOpMode {
                 .splineToLinearHeading(FinalsAutoConstants.SCORE_THREE_A, FinalsAutoConstants.SCORE_THREE_A_TANGENT)
                 .build();
 
-        Action park = robot.drivebase.drive.actionBuilder(FinalsAutoConstants.SCORE_THREE_A) // TODO NEED TO CHANGE TO TOUCH BAR
-                .strafeTo(FinalsAutoConstants.PARK_SAMPLE)
+        Action park = robot.drivebase.drive.actionBuilder(FinalsAutoConstants.SCORE_THREE_A)
+                .setTangent(FinalsAutoConstants.PARK_SAMPLE_SET_TANGENT)
+                .splineToLinearHeading(FinalsAutoConstants.PARK_SAMPLE, FinalsAutoConstants.PARK_SAMPLE_TANGENT)
                 .build();
 
 
@@ -97,14 +99,14 @@ public class FinalsSamplePark extends LinearOpMode {
                                                     robot.scoringAssembly.multiAxisArm.elbow.pickupPlus();
                                                     robot.scoringAssembly.multiAxisArm.wrist.rotateInLine();
                                                     return !robot.scoringAssembly.areMotorsAtTargetPresets();
-                                                },
-                                                (telemetryPacket) -> {
-                                                    robot.scoringAssembly.pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
-                                                    robot.scoringAssembly.slides.setSlidesPosition(Slides.SlidesExtension.RESET);
-                                                    return !robot.scoringAssembly.areMotorsAtTargetPresets();
                                                 }
                                             )
                                     ),
+                                    (telemetryPacket) -> {
+                                        robot.scoringAssembly.pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
+                                        robot.scoringAssembly.slides.setSlidesPosition(Slides.SlidesExtension.RESET);
+                                        return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                    },
                                     new SleepAction(.25),
                                     (telemetryPacket) -> { // Grab
                                         robot.scoringAssembly.multiAxisArm.hand.close();
@@ -143,14 +145,14 @@ public class FinalsSamplePark extends LinearOpMode {
                                                         robot.scoringAssembly.multiAxisArm.elbow.pickupPlus();
                                                         robot.scoringAssembly.multiAxisArm.wrist.rotateInLine();
                                                         return !robot.scoringAssembly.areMotorsAtTargetPresets();
-                                                    },
-                                                    (telemetryPacket) -> {
-                                                        robot.scoringAssembly.pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
-                                                        robot.scoringAssembly.slides.setSlidesPosition(Slides.SlidesExtension.RESET);
-                                                        return !robot.scoringAssembly.areMotorsAtTargetPresets();
                                                     }
                                             )
                                     ),
+                                    (telemetryPacket) -> {
+                                        robot.scoringAssembly.pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
+                                        robot.scoringAssembly.slides.setSlidesPosition(Slides.SlidesExtension.RESET);
+                                        return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                    },
                                     new SleepAction(.25),
                                     (telemetryPacket) -> { // Grab
                                         robot.scoringAssembly.multiAxisArm.hand.close();
@@ -188,14 +190,14 @@ public class FinalsSamplePark extends LinearOpMode {
                                                         robot.scoringAssembly.slides.setSlidesPosition(Slides.SlidesExtension.RESET);
                                                         robot.scoringAssembly.multiAxisArm.elbow.pickupPlus();
                                                         return !robot.scoringAssembly.areMotorsAtTargetPresets();
-                                                    },
-                                                    (telemetryPacket) -> {
-                                                        robot.scoringAssembly.pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
-                                                        robot.scoringAssembly.slides.setSlidesPosition(Slides.SlidesExtension.RESET);
-                                                        return !robot.scoringAssembly.areMotorsAtTargetPresets();
                                                     }
                                             )
                                     ),
+                                    (telemetryPacket) -> {
+                                        robot.scoringAssembly.pivot.setPivotPosition(Pivot.PivotAngle.PICKUP);
+                                        robot.scoringAssembly.slides.setSlidesPosition(Slides.SlidesExtension.RESET);
+                                        return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                    },
                                     new SleepAction(.25),
                                     (telemetryPacket) -> { // Grab
                                         robot.scoringAssembly.multiAxisArm.hand.close();
@@ -223,9 +225,9 @@ public class FinalsSamplePark extends LinearOpMode {
                                     new ParallelAction(
                                             park,
                                             new SequentialAction(
-                                                new SleepAction(2),
+                                                new SleepAction(1),
                                                     (telemetryPacket) -> { // Done
-                                                        robot.scoringAssembly.resetSpecimen();
+                                                        robot.scoringAssembly.samplePark();
                                                         return !robot.scoringAssembly.areMotorsAtTargetPresets();
                                                     }
                                             )

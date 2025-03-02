@@ -16,10 +16,8 @@ public class Robot_V2 extends Mechanism {
     boolean isAuto;
     boolean canFlipBack = false;
     double lastHeight = 0;
-    boolean setIn = true;
 
     private static final double RELEASE_MS = 200;
-    private static final double CLEAN_TIME = 300;
 
     public Drivebase drivebase;
     public ScoringAssembly scoringAssembly = new ScoringAssembly();
@@ -28,7 +26,6 @@ public class Robot_V2 extends Mechanism {
     InputHandler inputHandler = new InputHandler();
 
     ElapsedTime sampleDropTimer = new ElapsedTime();
-    ElapsedTime cleaningTimer = new ElapsedTime();
 
     enum RobotState {
         RESETTING,
@@ -37,8 +34,8 @@ public class Robot_V2 extends Mechanism {
         SCORING,
         DROP_SLIDES,
         HANGING,
-        CLEARING,
-        TOTAL_FIX
+        REZERO,
+        CHAT_WERE_COOKED
     }
 
     enum HangState {
@@ -102,16 +99,16 @@ public class Robot_V2 extends Mechanism {
                 case HANGING:
                     hanging();
                     break;
-                case CLEARING:
-                    clearLanding();
-                    break;
-                case TOTAL_FIX:
+                case REZERO:
                     totalFix();
+                case CHAT_WERE_COOKED:
+                    fixTheCookage();
             }
         }
-
-        if (inputHandler.MANUAL_OVERRIDE) {
-            activeState = RobotState.TOTAL_FIX;
+        if (activeState != RobotState.CHAT_WERE_COOKED) {
+            if (inputHandler.WE_R_COOKED) {
+                activeState = RobotState.CHAT_WERE_COOKED;
+            }
         }
     }
 
@@ -125,6 +122,7 @@ public class Robot_V2 extends Mechanism {
     private void resettingState() {
         switch (activeScoringMethodType) {
             case SAMPLE:
+                activeState = RobotState.SEARCHING;
             case DUMPING:
                 scoringAssembly.setPickupReset();
                 break;
@@ -198,12 +196,6 @@ public class Robot_V2 extends Mechanism {
                 break;
         }
 
-//        if (inputHandler.CLEAR_LANDING) {
-//            scoringAssembly.resetSpecimen();
-//            cleaningTimer.reset();
-//            activeState = RobotState.CLEARING;
-//        }
-
         if (inputHandler.ADVANCE_AUTOMATION && scoringAssembly.multiAxisArm.hand.activeHandState == Hand.HandState.CLOSED) {
             activeState = RobotState.PREP_SCORING;
         }
@@ -253,7 +245,7 @@ public class Robot_V2 extends Mechanism {
                 }
 
                 if (inputHandler.TOGGLE_HAND_ARM) {
-                    scoringAssembly.toggleSpecimen();
+                    scoringAssembly.multiAxisArm.toggleSpecimen();
                 }
 
                 if (inputHandler.ADVANCE_AUTOMATION) {
@@ -345,28 +337,20 @@ public class Robot_V2 extends Mechanism {
         }
     }
 
-    private void clearLanding() {
-        if (cleaningTimer.milliseconds() > CLEAN_TIME) {
-            if (setIn) {
-                scoringAssembly.multiAxisArm.cleanIn();
-                setIn = false;
-            } else {
-                scoringAssembly.multiAxisArm.cleanOut();
-                setIn = true;
-            }
-            cleaningTimer.reset();
-        }
-        if (inputHandler.CLEAR_LANDING) {
+    private void totalFix() {
+        scoringAssembly.totalFix();
+        if (inputHandler.ADVANCE_AUTOMATION) {
             activeState = RobotState.RESETTING;
         }
     }
 
-    private void totalFix() { // TODO CURRENT BASED
-        scoringAssembly.totalFix();
+    private void fixTheCookage() {
+        scoringAssembly.slides.setSlidesAtPower(inputHandler.SLIDES_CONTROL);
+        scoringAssembly.pivot.setPivotAtPower(inputHandler.PIVOT_CONTROL);
         if (inputHandler.ADVANCE_AUTOMATION) {
             scoringAssembly.slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            scoringAssembly.pivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             scoringAssembly.slides.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            scoringAssembly.pivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             scoringAssembly.pivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             activeState = RobotState.RESETTING;
         }
