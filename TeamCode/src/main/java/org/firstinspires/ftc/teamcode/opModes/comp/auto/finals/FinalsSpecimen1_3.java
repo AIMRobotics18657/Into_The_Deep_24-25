@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Robot_V2;
 
 @Autonomous(name = "Specimen1_3", group = "AAA_COMP", preselectTeleOp="RedTeleOp")
 public class FinalsSpecimen1_3 extends LinearOpMode {
-    Robot_V2 robot = new Robot_V2(FinalsAutoConstants.STARTING_POSITION_SPECIMEN, true);
+    Robot_V2 robot = new Robot_V2(BackupConstants.STARTING_POSITION, true);
 
     boolean isDone = false;
 
@@ -28,58 +28,49 @@ public class FinalsSpecimen1_3 extends LinearOpMode {
         }
 
         Action preHang = robot.drivebase.drive.actionBuilder(robot.drivebase.drive.localizer.getPose())
-                .strafeTo(FinalsAutoConstants.PRELOAD_DROP.position)
+                .strafeTo(BackupConstants.PRELOAD_DROP.position)
                 .build();
 
-        Action pushBlockOne = robot.drivebase.drive.actionBuilder(FinalsAutoConstants.PRELOAD_DROP)
-                .setTangent(FinalsAutoConstants.PUSH_SET_TANGENT)
-                .splineToSplineHeading(FinalsAutoConstants.PUSH_ONE_A, FinalsAutoConstants.PUSH_ONE_A_B_TANGENT)
-                .splineToLinearHeading(FinalsAutoConstants.PUSH_ONE_B, FinalsAutoConstants.PUSH_ONE_A_B_TANGENT)
-                .splineToSplineHeading(FinalsAutoConstants.PUSH_ONE_C, FinalsAutoConstants.PUSH_ONE_C_TANGENT)
+        Action pushBlockOne = robot.drivebase.drive.actionBuilder(BackupConstants.PRELOAD_DROP)
+                .strafeTo(BackupConstants.CLEARANCE.position)
+                .splineToLinearHeading(BackupConstants.PUSH_ONE_A, BackupConstants.PUSH_ONE_A_C_TANGENT)
+                .splineToLinearHeading(BackupConstants.PUSH_ONE_B, BackupConstants.PUSH_ONE_B_D_TANGENT)
+                .splineToLinearHeading(BackupConstants.PUSH_ONE_C, BackupConstants.PUSH_ONE_A_C_TANGENT)
+                .splineToLinearHeading(BackupConstants.PUSH_ONE_D, BackupConstants.PUSH_ONE_B_D_TANGENT)
                 .build();
 
-        Action pushBlockTwo = robot.drivebase.drive.actionBuilder(FinalsAutoConstants.PUSH_ONE_C)
-                .splineToLinearHeading(FinalsAutoConstants.PUSH_TWO_A, FinalsAutoConstants.PUSH_TWO_A_TANGENT)
-                .splineToSplineHeading(FinalsAutoConstants.PUSH_TWO_B, FinalsAutoConstants.PUSH_TWO_B_TANGENT)
+        Action pushBlockTwo = robot.drivebase.drive.actionBuilder(BackupConstants.PUSH_ONE_D)
+                .splineToLinearHeading(BackupConstants.PUSH_TWO_A, BackupConstants.PUSH_TWO_A_TANGENT)
+                .splineToLinearHeading(BackupConstants.PUSH_TWO_B, BackupConstants.PUSH_TWO_B_TANGENT)
                 .build();
 
-        Action pushBlockThree = robot.drivebase.drive.actionBuilder(FinalsAutoConstants.PUSH_TWO_B)
-                .splineToLinearHeading(FinalsAutoConstants.PUSH_THREE_A, FinalsAutoConstants.PUSH_THREE_A_TANGENT)
-                .splineToSplineHeading(FinalsAutoConstants.PUSH_THREE_B, FinalsAutoConstants.PUSH_THREE_B_C_TANGENT)
-                .splineToLinearHeading(FinalsAutoConstants.PUSH_THREE_C, FinalsAutoConstants.PUSH_THREE_B_C_TANGENT)
+//        Action pushBlockThree = robot.drivebase.drive.actionBuilder(BackupConstants.PUSH_TWO_B)
+//                .splineToLinearHeading(BackupConstants.PUSH_THREE_A, BackupConstants.PUSH_THREE_A_TANGENT)
+//                .strafeTo(BackupConstants.PUSH_THREE_B.position)
+//                .splineToLinearHeading(BackupConstants.HANG_ONE_A, BackupConstants.HANG_ONE_A_TANGENT)
+//                .build();
+
+        Action hangOne = robot.drivebase.drive.actionBuilder(BackupConstants.HANG_ONE_A)
+                .splineToLinearHeading(BackupConstants.HANG_ONE_B, BackupConstants.HANG_ONE_B_TANGENT)
                 .build();
 
-        Action hangOne = robot.drivebase.drive.actionBuilder(FinalsAutoConstants.PUSHED_RELOCALIZE_POSE)
-                .setTangent(FinalsAutoConstants.HANG_A_SET_TANGENT)
-                .splineToLinearHeading(FinalsAutoConstants.HANG_ONE_A, FinalsAutoConstants.HANG_ONE_A_TANGENT)
+        Action grabTwo = robot.drivebase.drive.actionBuilder(BackupConstants.HANG_ONE_B)
+                .strafeTo(BackupConstants.HANG_TWO_CLEARANCE.position)
+                .splineToLinearHeading(BackupConstants.HANG_TWO_A, BackupConstants.HANG_TWO_A_TANGENT)
                 .build();
 
-        Action grabTwo = robot.drivebase.drive.actionBuilder(FinalsAutoConstants.HANG_ONE_A)
-                .setTangent(FinalsAutoConstants.HANG_B_SET_TANGENT)
-                .splineToLinearHeading(FinalsAutoConstants.HANG_ONE_B, FinalsAutoConstants.HANG_ONE_B_TANGENT)
+        Action hangTwo = robot.drivebase.drive.actionBuilder(BackupConstants.HANG_TWO_A)
+                .splineToLinearHeading(BackupConstants.HANG_TWO_B, BackupConstants.HANG_TWO_B_TANGENT)
                 .build();
 
-        Action hangTwo = robot.drivebase.drive.actionBuilder(FinalsAutoConstants.HANG_ONE_B)
-                .setTangent(FinalsAutoConstants.HANG_A_SET_TANGENT)
-                .splineToLinearHeading(FinalsAutoConstants.HANG_TWO_A, FinalsAutoConstants.HANG_TWO_A_TANGENT)
+        Action grabThree = robot.drivebase.drive.actionBuilder(BackupConstants.HANG_TWO_B)
+                .strafeTo(BackupConstants.HANG_THREE_CLEARANCE.position)
+                .splineToLinearHeading(BackupConstants.HANG_THREE_A, BackupConstants.HANG_TWO_A_TANGENT)
                 .build();
 
-        Action grabThree = robot.drivebase.drive.actionBuilder(FinalsAutoConstants.HANG_TWO_A)
-                .setTangent(FinalsAutoConstants.HANG_B_SET_TANGENT)
-                .splineToLinearHeading(FinalsAutoConstants.HANG_TWO_B, FinalsAutoConstants.HANG_TWO_B_TANGENT)
+        Action hangThree = robot.drivebase.drive.actionBuilder(BackupConstants.HANG_THREE_A)
+                .splineToLinearHeading(BackupConstants.HANG_THREE_B, BackupConstants.HANG_THREE_B_TANGENT)
                 .build();
-
-        Action hangThree = robot.drivebase.drive.actionBuilder(FinalsAutoConstants.HANG_TWO_B)
-                .setTangent(FinalsAutoConstants.HANG_A_SET_TANGENT)
-                .splineToLinearHeading(FinalsAutoConstants.HANG_THREE_A, FinalsAutoConstants.HANG_THREE_A_TANGENT)
-                .build();
-
-        Action park = robot.drivebase.drive.actionBuilder(FinalsAutoConstants.HANG_TWO_A)
-                .setTangent(FinalsAutoConstants.HANG_B_SET_TANGENT)
-                .splineToLinearHeading(FinalsAutoConstants.HANG_THREE_B, FinalsAutoConstants.HANG_THREE_B_TANGENT)
-                .build();
-
-
 
         while (opModeIsActive()){
             Actions.runBlocking(
@@ -92,123 +83,96 @@ public class FinalsSpecimen1_3 extends LinearOpMode {
                                     new ParallelAction(
                                             preHang,
                                             (telemetryPacket) -> { // Raise slide to drop
-                                                robot.scoringAssembly.setSpecimenInPosition();
+                                                robot.scoringAssembly.setSpecimenClampedAUTO();
                                                 return !robot.scoringAssembly.areMotorsAtTargetPresets();
                                             }
                                     ),
-                                    new ParallelAction(
-                                            new SequentialAction(
-                                                    (telemetryPacket) -> { // Clip preload
-                                                        robot.scoringAssembly.multiAxisArm.toggleSpecimen();
-                                                        return false;
-                                                    },
-                                                    new SleepAction(0.1),
-                                                    (telemetryPacket) -> {
-                                                        robot.scoringAssembly.multiAxisArm.specimenPickup();
-                                                        return false;
-                                                    },
-                                                    new SleepAction(1.55),
-                                                    (telemetryPacket) -> { // Reset Position
-                                                        robot.stick.stickOut();
-                                                        robot.scoringAssembly.resetSpecimen();
-                                                        return !robot.scoringAssembly.areMotorsAtTargetPresets();
-                                                    }
-                                            ),
-                                            new SequentialAction(
-                                                    pushBlockOne,
-                                                    pushBlockTwo,
-                                                    pushBlockThree
-                                            )
-                                    ),
-
-                                    // SPEC 1
-
-                                    (telemetryPacket) -> { // Grab
-                                        robot.scoringAssembly.multiAxisArm.hand.close();
-                                        robot.stick.stickIn();
-                                        robot.drivebase.drive.localizer.setPose(FinalsAutoConstants.PUSHED_RELOCALIZE_POSE);
+                                    (telemetryPacket) -> { // Clip preload
+                                        robot.scoringAssembly.multiAxisArm.toggleSpecimen();
                                         return false;
                                     },
-                                    new SleepAction(0.15),
+                                    new SleepAction(.5),
+                                    (telemetryPacket) -> { // Reset Position
+                                        robot.scoringAssembly.resetSpecimen();
+                                        return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                    },
+                                    pushBlockOne,
+                                    pushBlockTwo,
+                                    (telemetryPacket) -> { // Grab
+                                        robot.scoringAssembly.multiAxisArm.hand.close();
+                                        return false;
+                                    },
+                                    new SleepAction(0.25),
                                     new ParallelAction(
                                             hangOne,
                                             (telemetryPacket) -> { // Raise slide to drop
-                                                robot.scoringAssembly.setSpecimenInPosition();
+                                                robot.scoringAssembly.setSpecimenClampedAUTO();
                                                 return !robot.scoringAssembly.areMotorsAtTargetPresets();
                                             }
                                     ),
-                                    new ParallelAction(
-                                        grabTwo,
-                                        new SequentialAction(
-                                                (telemetryPacket) -> { // Clip preload
-                                                    robot.scoringAssembly.multiAxisArm.toggleSpecimen();
-                                                    return false;
-                                                },
-                                                new SleepAction(0.1),
-                                                (telemetryPacket) -> { // Reset Position
-                                                    robot.scoringAssembly.resetSpecimen();
-                                                    return !robot.scoringAssembly.areMotorsAtTargetPresets();
-                                                }
-                                        )
-                                    ),
+                                    (telemetryPacket) -> { // Clip specimen
+                                        robot.scoringAssembly.multiAxisArm.toggleSpecimen();
+                                        return false;
+                                    },
+                                    new SleepAction(.5),
+                                    (telemetryPacket) -> { // Reset Position
+                                        robot.scoringAssembly.resetSpecimen();
+                                        return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                    },
 
-                                    //SPEC 2
+                                    //SPECIMEN 2
 
+                                    grabTwo,
                                     (telemetryPacket) -> { // Grab
                                         robot.scoringAssembly.multiAxisArm.hand.close();
                                         return false;
                                     },
-                                    new SleepAction(0.15),
+                                    new SleepAction(0.25),
                                     new ParallelAction(
                                             hangTwo,
                                             (telemetryPacket) -> { // Raise slide to drop
-                                                robot.scoringAssembly.setSpecimenInPosition();
+                                                robot.scoringAssembly.setSpecimenClampedAUTO();
                                                 return !robot.scoringAssembly.areMotorsAtTargetPresets();
                                             }
                                     ),
-                                    new ParallelAction(
-                                            grabThree,
-                                            new SequentialAction(
-                                                    (telemetryPacket) -> { // Clip preload
-                                                        robot.scoringAssembly.multiAxisArm.toggleSpecimen();
-                                                        return false;
-                                                    },
-                                                    new SleepAction(0.1),
-                                                    (telemetryPacket) -> { // Reset Position
-                                                        robot.scoringAssembly.resetSpecimen();
-                                                        return !robot.scoringAssembly.areMotorsAtTargetPresets();
-                                                    }
-                                            )
-                                    ),
+                                    (telemetryPacket) -> { // Clip specimen
+                                        robot.scoringAssembly.multiAxisArm.toggleSpecimen();
+                                        return false;
+                                    },
+                                    new SleepAction(.5),
+                                    (telemetryPacket) -> { // Reset Position
+                                        robot.scoringAssembly.resetSpecimen();
+                                        robot.scoringAssembly.resetAuto();
+                                        return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                    },
 
-                                    //SPEC 3
+                                    //SPECIMEN 3
 
+                                    grabThree,
                                     (telemetryPacket) -> { // Grab
                                         robot.scoringAssembly.multiAxisArm.hand.close();
                                         return false;
                                     },
-                                    new SleepAction(0.15),
+                                    new SleepAction(0.25),
                                     new ParallelAction(
                                             hangThree,
                                             (telemetryPacket) -> { // Raise slide to drop
-                                                robot.scoringAssembly.setSpecimenInPosition();
+                                                robot.scoringAssembly.setSpecimenClampedAUTO();
                                                 return !robot.scoringAssembly.areMotorsAtTargetPresets();
                                             }
                                     ),
-                                    new ParallelAction(
-                                            park,
-                                            new SequentialAction(
-                                                    (telemetryPacket) -> { // Clip preload
-                                                        robot.scoringAssembly.multiAxisArm.toggleSpecimen();
-                                                        return false;
-                                                    },
-                                                    new SleepAction(0.1),
-                                                    (telemetryPacket) -> { // Reset Position
-                                                        robot.scoringAssembly.resetSpecimen();
-                                                        return !robot.scoringAssembly.areMotorsAtTargetPresets();
-                                                    }
-                                            )
-                                    ),
+                                    (telemetryPacket) -> { // Clip specimen
+                                        robot.scoringAssembly.multiAxisArm.toggleSpecimen();
+                                        return false;
+                                    },
+                                    new SleepAction(.5),
+                                    (telemetryPacket) -> { // Reset Position
+                                        robot.scoringAssembly.resetSpecimen();
+                                        robot.scoringAssembly.resetAuto();
+                                        return !robot.scoringAssembly.areMotorsAtTargetPresets();
+                                    },
+
+
                                     (telemetryPacket) -> { // End Auto
                                         isDone = true;
                                         return false;

@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.opModes.comp.auto.supers;
+package org.firstinspires.ftc.teamcode.opModes.comp.auto.finals;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 
 
-public class SupersAutoConstants {
+public class BackupConstants {
     //in inches
 //THIS IS FOR RED SAMPLE SIDE!!!!!!!!!!!!!!!!!
 //scoring the pre-load one
