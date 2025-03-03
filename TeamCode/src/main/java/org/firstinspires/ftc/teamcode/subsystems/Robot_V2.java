@@ -101,6 +101,11 @@ public class Robot_V2 extends Mechanism {
                 case CHAT_WERE_COOKED:
                     fixTheCookage();
             }
+            if (inputHandler.STICK) {
+                stick.stickOut();
+            } else {
+                stick.stickIn();
+            }
         }
         if (activeState != RobotState.CHAT_WERE_COOKED) {
             if (inputHandler.WE_R_COOKED) {
