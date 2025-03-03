@@ -21,6 +21,7 @@ public class InputHandler {
     public boolean SET_SPECIMEN = false;
     public boolean SET_DUMP = false;
     public boolean WE_R_COOKED = false;
+    public boolean STICK = false;
 
     public void updateInputs(AIMPad aimpad, AIMPad aimpad2) {
         ADVANCE_AUTOMATION = aimpad2.isDPadUpPressed();
@@ -39,5 +40,6 @@ public class InputHandler {
         SET_SPECIMEN = aimpad.isRightBumperPressed();
         SET_DUMP = aimpad.isDPadDownPressed();
         WE_R_COOKED = aimpad2.isStartHeld() && aimpad2.isYPressed();
+        STICK = aimpad.isAHeld();
     }
 }
